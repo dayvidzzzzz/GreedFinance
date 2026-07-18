@@ -12,6 +12,5 @@ public interface UserMapper {
     User toDomain(UserEntity entity);
 
     @Mapping(target = "active", source = "active")
-    @Mapping(target = "tenant", ignore = true)
     UserEntity toEntity(User domain);
 }
