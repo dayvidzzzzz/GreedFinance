@@ -1,10 +1,7 @@
 package dysystem.com.greedfinance.infra.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -13,10 +10,10 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class UserEntity {
     @Id
     @Column(columnDefinition = "VARCHAR(36)")
@@ -35,7 +32,7 @@ public class UserEntity {
     private String password;
 
     @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    private boolean active;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -56,6 +53,6 @@ public class UserEntity {
     @PrePersist
     public void onCreation(){
         this.createAt = LocalDate.now();
-        this.isActive = true;
+        this.active = true;
     }
 }

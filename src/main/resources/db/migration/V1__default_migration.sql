@@ -58,7 +58,7 @@ VALUES (
     'Admin',
     'admin',
     'admin@system.com',
-    '$2a$10$N.ZOnI7m6dCZzqPyPZk6u.8F9z5j5lM5P5q5r5s5t5u5v5w5x5y5z5',
+    '$2a$10$U5l76o.9SQ5o77MawDRn.ub4qaC/ZrCqAxpfZqrL.qhRhyOG3csR6',
     TRUE,
     CURRENT_TIMESTAMP,
     '11111111-1111-1111-1111-111111111111'

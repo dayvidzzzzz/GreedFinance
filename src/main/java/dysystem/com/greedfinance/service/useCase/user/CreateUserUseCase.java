@@ -47,7 +47,6 @@ public class CreateUserUseCase {
                 .email(dto.email())
                 .password(passwordEncoder.encode("123456"))
                 .tenant(tenant)
-                .isActive(true)
                 .roles(Set.of(roleUser))
                 .build();
         User savedUser = userRepository.save(user);

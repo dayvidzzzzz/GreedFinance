@@ -23,7 +23,7 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private LocalDate createAt;
-    private boolean isActive;
+    private boolean active;
     private Tenant tenant;
     private Collection<Role> roles = new ArrayList<>();
 
@@ -34,6 +34,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isActive;
+        return active;
     }
 }

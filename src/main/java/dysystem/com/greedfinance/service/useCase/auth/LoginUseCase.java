@@ -24,19 +24,13 @@ public class LoginUseCase {
 
     @Transactional
     public TokenResponseDTO execute(LoginRequestDTO loginDto, String id_tenant) {
-        User user = null;
-
-        if (loginDto.login().contains("@"))
-            user = userRepository.findByEmail(loginDto.login())
-                    .orElseThrow(() -> new NotFoundException("Usuário não encontrado pelo email"));
-        else
-            user = userRepository.findByUsername(loginDto.login())
-                    .orElseThrow(() -> new NotFoundException("Usuário não encontrado pelo username"));
+        User user = userRepository.findByUsernameOrEmail(loginDto.login())
+                .orElseThrow(() -> new NotFoundException("User not foung" + loginDto.login()));
 
         if (!user.isActive())
             throw new BadRequestException("A conta do usuário está inativa");
 
-        if (passwordEncoder.matches(loginDto.password(), user.getPassword()))
+        if (!passwordEncoder.matches(loginDto.password(), user.getPassword()))
             throw new BadRequestException("Credenciais inválidas");
 
         return toTokenResponse(loginDto.login(), id_tenant);
