@@ -1,1 +1,37 @@
-spring.application.name=GreedFinance
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: ${DB_MYSQL_DATASOURCE_URL}
+    user: ${DB_MYSQL_USER}
+    password: ${DB_MYSQL_PASSWORD}
+    port: ${DB_MYSQL_PORT}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: ${HIKARI_MAX_POOL_SIZE:20}
+      minimum-idle: ${HIKARI_MIN_IDLE:5}
+      connection-timeout: ${HIKARI_CONNECTION_TIMEOUT:30000}
+      idle-timeout: ${HIKARI_IDLE_TIMEOUT:600000}
+      max-lifetime: ${HIKARI_MAX_LIFETIME:1800000}
+
+    jpa:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        ddl-auto: ${JPA_DDL_AUTO:validate}
+      show-sql: ${JPA_SHOW_SQL:false}
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQLDialect
+          format_sql: false
+          jdbc:
+            batch_size: ${HIBERNATE_BATCH_SIZE:20}
+
+    flyway:
+      enabled: ${FLYWAY_ENABLED:true}
+      clean-disabled: ${FLYWAY_CLEAN_DISABLED:true}
+      validate-on-migrate: ${FLYWAY_VALIDATE_ON_MIGRATE:true}
+
+jwt:
+  expiration: ${JWT_EXPIRATION:9000000}
+  key: ${JWT_KEY:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL21ldXNlcnZpZG9yLmNvbS5iciIsImF1ZCI6Imh0dHBzOi8vbWV1YXBpLmNvbS5iciIsInN1YiI6IjEyMzQ1Njc4OTAiLCJuYW1lIjoiVXN1YXJpbyBkZSBUZXN0ZSIsImVtYWlsIjoidXN1YXJpb0B0ZXN0ZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NTI2OTk5MDAsImV4cCI6MTc1MjcwMzUwMH0.0Y_hS-964N1m6v87x41Lg6x7Z5f4Q9T8y3C_7n5Z3z4}
