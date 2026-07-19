@@ -1,6 +1,3 @@
-server:
-  port: 8081
-
 spring:
   datasource:
     url: ${DB_MYSQL_DATASOURCE_URL}
@@ -35,5 +32,3 @@ spring:
 jwt:
   expiration: ${JWT_EXPIRATION}
   key: ${JWT_KEY}
-
-
