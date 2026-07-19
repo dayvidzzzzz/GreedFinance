@@ -2,6 +2,9 @@ package dysystem.com.greedfinance.infra.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -14,6 +17,8 @@ import java.util.Collection;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@FilterDef(name = "tenantFilter", parameters = @ParamDef(name = "tenantId", type = String.class))
+@Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
 public class UserEntity {
     @Id
     @Column(columnDefinition = "VARCHAR(36)")

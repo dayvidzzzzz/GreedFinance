@@ -1,5 +1,7 @@
 package dysystem.com.greedfinance.config.security;
 
+import dysystem.com.greedfinance.domain.model.User;
+import dysystem.com.greedfinance.utils.TenantContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,19 +31,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");
 
-        if(!StringUtils.hasText(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")){
+        try {
+            if(!StringUtils.hasText(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")){
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            if(tokenProvider.isValid(authorizationHeader.substring(7))){
+                String login = tokenProvider.extractUsername(authorizationHeader.substring(7));
+                UserDetails userDetails = userDetailsService.loadUserByUsername(login);
+
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                if (userDetails instanceof User user && user.getTenant() != null)
+                    TenantContext.setCurrentTenantId(user.getTenant().getId());
+
+            }
+
             filterChain.doFilter(request, response);
-            return;
+        } finally {
+            TenantContext.clear();
         }
-
-        if(tokenProvider.isValid(authorizationHeader.substring(7))){
-            String login = tokenProvider.extractUsername(authorizationHeader.substring(7));
-            UserDetails userDetails = userDetailsService.loadUserByUsername(login);
-
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
-
-        filterChain.doFilter(request, response);
     }
 }
