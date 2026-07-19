@@ -15,22 +15,22 @@ spring:
       idle-timeout: ${HIKARI_IDLE_TIMEOUT:600000}
       max-lifetime: ${HIKARI_MAX_LIFETIME:1800000}
 
-    jpa:
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.MySQL8Dialect
+      ddl-auto: ${JPA_DDL_AUTO:validate}
+    show-sql: ${JPA_SHOW_SQL:false}
+    properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-        ddl-auto: ${JPA_DDL_AUTO:validate}
-      show-sql: ${JPA_SHOW_SQL:false}
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.MySQLDialect
-          format_sql: false
-          jdbc:
-            batch_size: ${HIBERNATE_BATCH_SIZE:20}
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: false
+        jdbc:
+          batch_size: ${HIBERNATE_BATCH_SIZE:20}
 
-    flyway:
-      enabled: ${FLYWAY_ENABLED:true}
-      clean-disabled: ${FLYWAY_CLEAN_DISABLED:true}
-      validate-on-migrate: ${FLYWAY_VALIDATE_ON_MIGRATE:true}
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    clean-disabled: ${FLYWAY_CLEAN_DISABLED:true}
+    validate-on-migrate: ${FLYWAY_VALIDATE_ON_MIGRATE:true}
 
 jwt:
   expiration: ${JWT_EXPIRATION}
