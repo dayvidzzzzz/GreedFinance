@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -22,7 +21,7 @@ public class User implements UserDetails {
     private String username;
     private String email;
     private String password;
-    private LocalDate createAt;
+    private LocalDateTime createAt;
     private boolean active;
     private Tenant tenant;
     private Collection<Role> roles = new ArrayList<>();

@@ -1,13 +1,13 @@
 package dysystem.com.greedfinance.dto.response;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record UserCreateResponseDTO(
         String id,
         String name,
         String email,
         String username,
-        LocalDate createAt,
+        LocalDateTime createAt,
         RoleResponse role,
         TenantResponse tenant
 ) {
