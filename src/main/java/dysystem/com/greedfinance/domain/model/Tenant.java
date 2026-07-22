@@ -15,5 +15,5 @@ import java.util.UUID;
 public class Tenant {
     private String id;
     private String name;
-    private List<User> users;
+    private List<String> usersId;
 }

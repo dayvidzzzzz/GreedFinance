@@ -27,7 +27,6 @@ public class CreateTenantUseCase {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     @Transactional
     public TenantResponseCreateDTO execute(TenantCreateRequestDTO dto){
         if (tenantRepository.findByName(dto.name()).isPresent())
@@ -61,8 +60,8 @@ public class CreateTenantUseCase {
                 .username(dto.userMaster().username())
                 .email(dto.userMaster().email())
                 .password(passwordEncoder.encode(dto.userMaster().password()))
-                .roles(Set.of(roleMaster))
-                .tenant(newTenant)
+                .roleIds(Set.of(roleMaster.getId()))
+                .tenantId(newTenant.getId())
                 .build();
         User newUser = userRepository.save(user);
 

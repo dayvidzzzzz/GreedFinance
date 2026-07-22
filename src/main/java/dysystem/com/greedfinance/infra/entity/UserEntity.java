@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "users")
@@ -55,11 +56,12 @@ public class UserEntity {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Collection<RoleEntity> roleEntities = new ArrayList<>();
+    private Collection<RoleEntity> roles = new HashSet<>();
 
     @PrePersist
     public void onCreation(){
         this.createAt = LocalDateTime.now();
         this.active = true;
     }
+
 }

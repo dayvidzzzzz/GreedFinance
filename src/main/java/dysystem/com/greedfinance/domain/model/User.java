@@ -16,6 +16,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @Builder
 public class User implements UserDetails {
+
     private String id;
     private String name;
     private String username;
@@ -23,16 +24,29 @@ public class User implements UserDetails {
     private String password;
     private LocalDateTime createAt;
     private boolean active;
-    private Tenant tenant;
-    private Collection<Role> roles = new ArrayList<>();
+
+    // ✅ APENAS IDs - não mapeia objetos completos
+    private String tenantId;          // ← ID do Tenant
+    private Collection<Long> roleIds; // ← IDs das Roles (Many-to-Many)
+
+    // ❌ NÃO TER OBJETOS COMPLETOS
+    // private Tenant tenant;
+    // private Collection<Role> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        // Retorna uma coleção vazia ou busca as roles de outro lugar
+        // Isso será tratado pelo Security Service
+        return new ArrayList<>();
     }
 
     @Override
     public boolean isEnabled() {
         return active;
+    }
+
+    // Método auxiliar para criar User com roles carregadas
+    public Collection<? extends GrantedAuthority> getAuthorities(Collection<Role> roles) {
+        return roles;
     }
 }
