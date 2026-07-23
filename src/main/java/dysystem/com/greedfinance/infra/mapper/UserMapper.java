@@ -56,10 +56,13 @@ public class UserMapper {
         entity.setActive(domain.isActive());
         entity.setCreateAt(domain.getCreateAt());
 
-        entity.setTenant(tenantRepositoryJpa.findById(domain.getTenantId())
-                .orElseThrow(() -> new NotFoundException("dasdasd")));
+        if (domain.getTenantId() != null)
+            entity.setTenant(tenantRepositoryJpa.findById(domain.getTenantId())
+                    .orElseThrow(() -> new NotFoundException("Tenant not found")));
 
-        entity.setRoles(roleRepositoryJpa.findAllById(domain.getRoleIds()));
+        if (domain.getRoleIds() != null && !domain.getRoleIds().isEmpty())
+            entity.setRoles(roleRepositoryJpa.findAllById(domain.getRoleIds()));
+
         return entity;
     }
 }
