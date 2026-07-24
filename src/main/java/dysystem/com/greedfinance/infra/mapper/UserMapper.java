@@ -2,6 +2,7 @@ package dysystem.com.greedfinance.infra.mapper;
 
 import dysystem.com.greedfinance.domain.model.User;
 import dysystem.com.greedfinance.handler.exception.NotFoundException;
+import dysystem.com.greedfinance.infra.entity.AccountEntity;
 import dysystem.com.greedfinance.infra.entity.RoleEntity;
 import dysystem.com.greedfinance.infra.entity.UserEntity;
 import dysystem.com.greedfinance.infra.repository.jpa.RoleRepositoryJpa;
@@ -17,6 +18,7 @@ public class UserMapper {
 
     private final TenantRepositoryJpa tenantRepositoryJpa;
     private final RoleRepositoryJpa roleRepositoryJpa;
+    // REMOVER: private final AccountRepositoryJpa accountRepositoryJpa; // <- CAUSA O PROBLEMA
 
     public User toDomain(UserEntity entity) {
         if (entity == null) return null;
@@ -38,6 +40,14 @@ public class UserMapper {
                     entity.getRoles().stream()
                             .map(RoleEntity::getId)
                             .collect(Collectors.toSet())
+            );
+        }
+
+        if (entity.getAccounts() != null && !entity.getAccounts().isEmpty()) {
+            builder.accountsId(
+                    entity.getAccounts().stream()
+                            .map(AccountEntity::getId)
+                            .collect(Collectors.toList())
             );
         }
 

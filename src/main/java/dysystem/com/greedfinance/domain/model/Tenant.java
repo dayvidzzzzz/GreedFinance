@@ -15,5 +15,6 @@ public class Tenant {
     private String id;
     private String name;
     private List<String> usersId;
-    private List<String> categoriesId;
+    private List<Long> categoriesId;
+    private List<String> accountsId;
 }

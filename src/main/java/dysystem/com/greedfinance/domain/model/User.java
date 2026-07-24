@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -26,6 +27,7 @@ public class User implements UserDetails {
     private boolean active;
     private String tenantId;
     private Collection<Long> roleIds;
+    private List<String> accountsId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

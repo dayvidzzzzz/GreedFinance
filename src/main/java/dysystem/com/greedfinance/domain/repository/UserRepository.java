@@ -12,5 +12,5 @@ public interface UserRepository {
     Optional<User> findByEmail(String email);
     Optional<User> findByUsername(String username);
     Optional<User> findByUsernameOrEmail(String login);
-
+    List<User> findAllById(List<String> usersId);
 }

@@ -76,4 +76,12 @@ public class UserRepositoryImpl implements UserRepository {
         return repositoryJpa.findByUsernameOrEmail(login)
                 .map(mapper::toDomain);
     }
+
+    @Override
+    public List<User> findAllById(List<String> usersId) {
+        return repositoryJpa.findAllById(usersId)
+                .stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
 }

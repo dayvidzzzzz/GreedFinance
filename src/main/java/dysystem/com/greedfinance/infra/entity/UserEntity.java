@@ -9,8 +9,10 @@ import org.hibernate.annotations.ParamDef;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -56,6 +58,9 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Collection<RoleEntity> roles = new HashSet<>();
+
+    @ManyToMany(mappedBy = "holders", fetch = FetchType.LAZY)
+    private List<AccountEntity> accounts = new ArrayList<>();
 
     @PrePersist
     public void onCreation(){
