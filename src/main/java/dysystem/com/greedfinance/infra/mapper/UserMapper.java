@@ -18,7 +18,6 @@ public class UserMapper {
 
     private final TenantRepositoryJpa tenantRepositoryJpa;
     private final RoleRepositoryJpa roleRepositoryJpa;
-    // REMOVER: private final AccountRepositoryJpa accountRepositoryJpa; // <- CAUSA O PROBLEMA
 
     public User toDomain(UserEntity entity) {
         if (entity == null) return null;

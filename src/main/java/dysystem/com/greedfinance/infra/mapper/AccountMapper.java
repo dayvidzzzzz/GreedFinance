@@ -3,8 +3,10 @@ package dysystem.com.greedfinance.infra.mapper;
 import dysystem.com.greedfinance.domain.model.Account;
 import dysystem.com.greedfinance.handler.exception.NotFoundException;
 import dysystem.com.greedfinance.infra.entity.AccountEntity;
+import dysystem.com.greedfinance.infra.entity.TransactionEntity;
 import dysystem.com.greedfinance.infra.entity.UserEntity;
 import dysystem.com.greedfinance.infra.repository.jpa.TenantRepositoryJpa;
+import dysystem.com.greedfinance.infra.repository.jpa.TransactionRepositoryJpa;
 import dysystem.com.greedfinance.infra.repository.jpa.UserRepositoryJpa;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -21,6 +24,7 @@ public class AccountMapper {
 
     private final TenantRepositoryJpa tenantRepositoryJpa;
     private final UserRepositoryJpa userRepositoryJpa;
+    private final TransactionRepositoryJpa transactionRepositoryJpa;
 
     public Account toDomain(AccountEntity entity) {
         if (entity == null) return null;
@@ -33,11 +37,13 @@ public class AccountMapper {
                 .type(entity.getType())
                 .accountNumber(entity.getAccountNumber())
                 .agencyNumber(entity.getAgencyNumber())
-                .isActive(entity.isActive())
                 .defaultAccount(entity.isDefaultAccount())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
-                .tenantId(entity.getTenant() != null ? entity.getTenant().getId() : null);
+                .tenantId(entity.getTenant() != null ? entity.getTenant().getId() : null)
+                .transactionsId(entity.getTransactions() != null ?
+                        entity.getTransactions().stream().map(TransactionEntity::getId).toList() :
+                        new ArrayList<>());
 
         if (entity.getHolders() != null && !entity.getHolders().isEmpty()) {
             builder.holderIds(entity.getHolders()
@@ -45,6 +51,8 @@ public class AccountMapper {
                     .map(UserEntity::getId)
                     .collect(Collectors.toList())
             );
+        } else {
+            builder.holderIds(new ArrayList<>());
         }
         return builder.build();
     }
@@ -63,17 +71,23 @@ public class AccountMapper {
         entity.setActive(domain.isActive());
         entity.setDefaultAccount(domain.isDefaultAccount());
 
-
-        if (domain.getTenantId() != null)
+        if (domain.getTenantId() != null) {
             entity.setTenant(tenantRepositoryJpa.findById(domain.getTenantId())
-                    .orElseThrow(() -> new NotFoundException("Tenant not found")));
+                    .orElseThrow(() -> new NotFoundException("Tenant not found: " + domain.getTenantId())));
+        }
 
-        if (domain.getHolderIds() != null && !domain.getHolderIds().isEmpty()) {
-            ArrayList<UserEntity> holders = new ArrayList<>(
-                    userRepositoryJpa.findAllById(domain.getHolderIds()));
-            entity.setHolders(holders);
+        List<String> holderIds = domain.getHolderIds();
+        if (holderIds != null && !holderIds.isEmpty()) {
+            entity.setHolders(userRepositoryJpa.findAllById(holderIds));
         } else {
             entity.setHolders(new ArrayList<>());
+        }
+
+        List<Long> transactionIds = domain.getTransactionsId();
+        if (transactionIds != null && !transactionIds.isEmpty()) {
+            entity.setTransactions(transactionRepositoryJpa.findAllById(transactionIds));
+        } else {
+            entity.setTransactions(new ArrayList<>());
         }
 
         return entity;

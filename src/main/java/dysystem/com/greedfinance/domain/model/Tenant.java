@@ -17,4 +17,5 @@ public class Tenant {
     private List<String> usersId;
     private List<Long> categoriesId;
     private List<String> accountsId;
+    private List<Long> transactionsId;
 }

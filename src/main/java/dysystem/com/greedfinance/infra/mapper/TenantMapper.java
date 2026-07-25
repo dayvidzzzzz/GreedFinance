@@ -1,12 +1,9 @@
 package dysystem.com.greedfinance.infra.mapper;
 
 import dysystem.com.greedfinance.domain.model.Tenant;
-import dysystem.com.greedfinance.infra.entity.AccountEntity;
-import dysystem.com.greedfinance.infra.entity.CategoryEntity;
-import dysystem.com.greedfinance.infra.entity.TenantEntity;
-import dysystem.com.greedfinance.infra.entity.UserEntity;
+import dysystem.com.greedfinance.infra.entity.*;
 import dysystem.com.greedfinance.infra.repository.jpa.AccountRepositoryJpa;
-import dysystem.com.greedfinance.infra.repository.jpa.CategoryRepositoryJpa;
+import dysystem.com.greedfinance.infra.repository.jpa.TransactionRepositoryJpa;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +15,7 @@ import java.util.stream.Collectors;
 public class TenantMapper {
 
     private final AccountRepositoryJpa accountRepositoryJpa;
+    private final TransactionRepositoryJpa transactionRepositoryJpa;
 
     public Tenant toDomain(TenantEntity entity) {
         if (entity == null) return null;
@@ -56,6 +54,16 @@ public class TenantMapper {
             builder.accountsId(Collections.emptyList());
         }
 
+        if (entity.getTransactions() != null && !entity.getAccounts().isEmpty()) {
+            builder.transactionsId(
+                    entity.getTransactions().stream()
+                            .map(TransactionEntity::getId)
+                            .collect(Collectors.toList())
+            );
+        } else {
+            builder.transactionsId(Collections.emptyList());
+        }
+
         return builder.build();
     }
 
@@ -66,6 +74,7 @@ public class TenantMapper {
         entity.setId(domain.getId());
         entity.setName(domain.getName());
         entity.setAccounts(accountRepositoryJpa.findAllById(domain.getAccountsId()));
+        entity.setTransactions(transactionRepositoryJpa.findAllById(domain.getTransactionsId()));
         return entity;
     }
 }

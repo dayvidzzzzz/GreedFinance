@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -28,5 +29,6 @@ public class Account {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String tenantId;
-    private List<String> holderIds;
+    private List<String> holderIds = new ArrayList<>();;
+    private List<Long> transactionsId = new ArrayList<>();;
 }

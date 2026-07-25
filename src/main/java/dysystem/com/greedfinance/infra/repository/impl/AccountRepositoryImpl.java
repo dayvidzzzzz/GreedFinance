@@ -75,16 +75,19 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public BigDecimal getTotalBalanceByTenant(String tenantId) {
+        enableTenantFilter();
         return accountRepositoryJpa.getTotalBalanceByTenant(tenantId);
     }
 
     @Override
     public BigDecimal getTotalBalanceByUser(String userId) {
+        enableTenantFilter();
         return accountRepositoryJpa.getTotalBalanceByUser(userId);
     }
 
     @Override
     public Optional<Account> findByAccountNumber(String accountNumber) {
+        enableTenantFilter();
         return accountRepositoryJpa.findByAccountNumber(accountNumber)
                 .map(mapper::toDomain);
     }
