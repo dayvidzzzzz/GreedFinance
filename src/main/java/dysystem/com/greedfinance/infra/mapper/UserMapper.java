@@ -76,9 +76,10 @@ public class UserMapper {
                     .orElseThrow(() -> new NotFoundException("Tenant not found")));
         }
 
-        if (domain.getRoleIds() != null && !domain.getRoleIds().isEmpty()) {
+        if (domain.getRoleIds() != null && !domain.getRoleIds().isEmpty())
             entity.setRoles(roleRepositoryJpa.findAllById(domain.getRoleIds()));
-        } else if (domain.getRoles() != null && !domain.getRoles().isEmpty()) {
+
+        if (domain.getRoles() != null && !domain.getRoles().isEmpty()) {
             Collection<Long> roleIds = domain.getRoles().stream()
                     .map(Role::getId)
                     .collect(Collectors.toList());

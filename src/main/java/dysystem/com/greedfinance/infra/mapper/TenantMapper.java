@@ -73,8 +73,8 @@ public class TenantMapper {
         TenantEntity entity = new TenantEntity();
         entity.setId(domain.getId());
         entity.setName(domain.getName());
-        entity.setAccounts(accountRepositoryJpa.findAllById(domain.getAccountsId()));
-        entity.setTransactions(transactionRepositoryJpa.findAllById(domain.getTransactionsId()));
+        entity.setAccounts(Collections.emptyList());
+        entity.setTransactions(Collections.emptyList());
         return entity;
     }
 }
