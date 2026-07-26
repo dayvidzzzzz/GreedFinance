@@ -9,6 +9,7 @@ import dysystem.com.greedfinance.service.useCase.category.FindCategoryByIdUseCas
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/api/categories")
 @AllArgsConstructor
+@PreAuthorize("hasRole('USER')")
 public class CategoryController {
 
     private final CategorySelectionLists categoryLists;

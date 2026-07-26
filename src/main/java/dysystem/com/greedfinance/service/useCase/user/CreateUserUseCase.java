@@ -10,6 +10,7 @@ import dysystem.com.greedfinance.dto.request.UserCreateRequestDTO;
 import dysystem.com.greedfinance.dto.response.UserCreateResponseDTO;
 import dysystem.com.greedfinance.handler.exception.BusinessException;
 import dysystem.com.greedfinance.handler.exception.NotFoundException;
+import dysystem.com.greedfinance.utils.SecurityUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,14 +29,14 @@ public class CreateUserUseCase {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public UserCreateResponseDTO execute(User userMaster, UserCreateRequestDTO dto) {
+    public UserCreateResponseDTO execute(UserCreateRequestDTO dto) {
         if (userRepository.findByEmail(dto.email()).isPresent())
             throw new BusinessException("This email is already in use");
 
         if (userRepository.findByUsername(dto.username()).isPresent())
             throw new BusinessException("This username is already in use");
 
-        String idTenant = userMaster.getTenantId();
+        String idTenant = SecurityUtils.getCurrentTenantId();
         Tenant tenant = tenantRepository.findById(idTenant)
                 .orElseThrow(() -> new NotFoundException("Tenant not found: " + idTenant));
 

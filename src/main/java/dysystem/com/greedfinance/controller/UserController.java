@@ -1,6 +1,5 @@
 package dysystem.com.greedfinance.controller;
 
-import dysystem.com.greedfinance.domain.model.User;
 import dysystem.com.greedfinance.dto.request.UserCreateRequestDTO;
 import dysystem.com.greedfinance.dto.response.UserCreateResponseDTO;
 import dysystem.com.greedfinance.dto.response.UserResponseDTO;
@@ -9,7 +8,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/api/users")
 @AllArgsConstructor
+@PreAuthorize("hasRole('USER')")
 public class UserController {
 
     private final CreateUserUseCase createUserUseCase;
@@ -25,12 +25,11 @@ public class UserController {
     private final FindUserByIdUseCase findUserByIdUseCase;
     private final FindUserByUsernameUseCase findUserByUsernameUseCase;
 
+    @PreAuthorize("hasRole('MASTER')")
     @PostMapping
-    public ResponseEntity<UserCreateResponseDTO> createUser(
-            @AuthenticationPrincipal User user,
-            @RequestBody @Valid UserCreateRequestDTO dto) {
+    public ResponseEntity<UserCreateResponseDTO> createUser(@RequestBody @Valid UserCreateRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(createUserUseCase.execute(user, dto));
+                .body(createUserUseCase.execute(dto));
     }
 
     @GetMapping
