@@ -1,5 +1,6 @@
 package dysystem.com.greedfinance.infra.mapper;
 
+import dysystem.com.greedfinance.domain.model.Role;
 import dysystem.com.greedfinance.domain.model.User;
 import dysystem.com.greedfinance.handler.exception.NotFoundException;
 import dysystem.com.greedfinance.infra.entity.AccountEntity;
@@ -10,6 +11,7 @@ import dysystem.com.greedfinance.infra.repository.jpa.TenantRepositoryJpa;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Component
@@ -35,11 +37,15 @@ public class UserMapper {
             builder.tenantId(entity.getTenant().getId());
 
         if (entity.getRoles() != null && !entity.getRoles().isEmpty()) {
-            builder.roleIds(
-                    entity.getRoles().stream()
-                            .map(RoleEntity::getId)
-                            .collect(Collectors.toSet())
-            );
+            Collection<Role> roles = entity.getRoles().stream()
+                    .map(this::toRoleDomain)
+                    .collect(Collectors.toList());
+            builder.roles(roles);
+
+            Collection<Long> roleIds = entity.getRoles().stream()
+                    .map(RoleEntity::getId)
+                    .collect(Collectors.toList());
+            builder.roleIds(roleIds);
         }
 
         if (entity.getAccounts() != null && !entity.getAccounts().isEmpty()) {
@@ -65,13 +71,29 @@ public class UserMapper {
         entity.setActive(domain.isActive());
         entity.setCreateAt(domain.getCreateAt());
 
-        if (domain.getTenantId() != null)
+        if (domain.getTenantId() != null) {
             entity.setTenant(tenantRepositoryJpa.findById(domain.getTenantId())
                     .orElseThrow(() -> new NotFoundException("Tenant not found")));
+        }
 
-        if (domain.getRoleIds() != null && !domain.getRoleIds().isEmpty())
+        if (domain.getRoleIds() != null && !domain.getRoleIds().isEmpty()) {
             entity.setRoles(roleRepositoryJpa.findAllById(domain.getRoleIds()));
+        } else if (domain.getRoles() != null && !domain.getRoles().isEmpty()) {
+            Collection<Long> roleIds = domain.getRoles().stream()
+                    .map(Role::getId)
+                    .collect(Collectors.toList());
+            entity.setRoles(roleRepositoryJpa.findAllById(roleIds));
+        }
 
         return entity;
+    }
+
+    private Role toRoleDomain(RoleEntity entity) {
+        if (entity == null) return null;
+
+        Role role = new Role();
+        role.setId(entity.getId());
+        role.setName(entity.getName());
+        return role;
     }
 }

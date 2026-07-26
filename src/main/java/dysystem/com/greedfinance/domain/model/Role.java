@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
