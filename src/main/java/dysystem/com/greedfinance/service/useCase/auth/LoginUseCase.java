@@ -1,6 +1,7 @@
 package dysystem.com.greedfinance.service.useCase.auth;
 
 import dysystem.com.greedfinance.config.security.TokenProvider;
+import dysystem.com.greedfinance.domain.model.Role;
 import dysystem.com.greedfinance.domain.model.User;
 import dysystem.com.greedfinance.domain.repository.TenantRepository;
 import dysystem.com.greedfinance.domain.repository.UserRepository;
@@ -13,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -27,7 +28,7 @@ public class LoginUseCase {
     @Transactional
     public TokenResponseDTO execute(LoginRequestDTO loginDto, String id_tenant) {
         User user = userRepository.findByUsernameOrEmail(loginDto.login())
-                .orElseThrow(() -> new NotFoundException("User not foung" + loginDto.login()));
+                .orElseThrow(() -> new NotFoundException("User not found " + loginDto.login()));
 
         if (!tenantRepository.findById(id_tenant).isPresent())
             throw new NotFoundException("This tenant don´t exists");
@@ -38,13 +39,15 @@ public class LoginUseCase {
         if (!passwordEncoder.matches(loginDto.password(), user.getPassword()))
             throw new BadRequestException("Credenciais inválidas");
 
-        return toTokenResponse(loginDto.login(), id_tenant, user);
+        List<String> rolesName = user.getRoles().stream().map(Role::getName).toList();
+
+        return toTokenResponse(loginDto.login(), id_tenant, user.isFirstAccess(), rolesName);
     }
 
-    private TokenResponseDTO toTokenResponse(String login, String tenant_id, User user) {
+    private TokenResponseDTO toTokenResponse(String login, String tenant_id, boolean fistAccess, List<String> roles) {
         try {
             String token = tokenProvider.buildToken(login, tenant_id);
-            return new TokenResponseDTO(token, "Bearer", user.isFirstAccess());
+            return new TokenResponseDTO(token, "Bearer", fistAccess, roles);
         } catch (Exception e) {
             throw new BadRequestException("Erro ao gerar o token de acesso");
         }
