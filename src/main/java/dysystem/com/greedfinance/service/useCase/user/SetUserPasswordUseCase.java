@@ -28,6 +28,7 @@ public class SetUserPasswordUseCase {
             throw new BusinessException("Ths password have to be different");
 
         user.setPassword(passwordEncoder.encode(dto.password()));
+        user.setFirstAccess(false);
         userRepository.save(user);
     }
 }

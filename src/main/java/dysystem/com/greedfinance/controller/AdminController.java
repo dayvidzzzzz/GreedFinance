@@ -35,7 +35,7 @@ public class AdminController {
         return ResponseEntity.ok(findAllTenant.execute());
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(String id){
         deleteTenantUseCase.execute(id);
         return ResponseEntity.ok().build();
