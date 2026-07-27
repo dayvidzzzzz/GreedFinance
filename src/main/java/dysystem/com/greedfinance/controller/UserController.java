@@ -24,6 +24,7 @@ public class UserController {
     private final FindAllUsersUseCase findAllUsersUseCase;
     private final FindUserByIdUseCase findUserByIdUseCase;
     private final FindUserByUsernameUseCase findUserByUsernameUseCase;
+    private final DeleteUserById deleteUserById;
 
     @PreAuthorize("hasRole('MASTER')")
     @PostMapping
@@ -40,6 +41,12 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> findUserById(@PathVariable String id) {
         return ResponseEntity.ok(findUserByIdUseCase.execute(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable String id){
+        deleteUserById.execute(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/email/{email}")
