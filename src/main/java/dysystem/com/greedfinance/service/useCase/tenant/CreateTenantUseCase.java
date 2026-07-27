@@ -60,6 +60,7 @@ public class CreateTenantUseCase {
                 .email(dto.userMaster().email())
                 .password(passwordEncoder.encode(dto.userMaster().password()))
                 .roleIds(Set.of(roleMaster.getId()))
+                .firstAccess(false)
                 .tenantId(newTenant.getId())
                 .build();
         User newUser = userRepository.save(user);

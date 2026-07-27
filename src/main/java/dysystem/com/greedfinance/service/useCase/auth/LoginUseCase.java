@@ -38,13 +38,13 @@ public class LoginUseCase {
         if (!passwordEncoder.matches(loginDto.password(), user.getPassword()))
             throw new BadRequestException("Credenciais inválidas");
 
-        return toTokenResponse(loginDto.login(), id_tenant);
+        return toTokenResponse(loginDto.login(), id_tenant, user);
     }
 
-    private TokenResponseDTO toTokenResponse(String login, String tenant_id) {
+    private TokenResponseDTO toTokenResponse(String login, String tenant_id, User user) {
         try {
             String token = tokenProvider.buildToken(login, tenant_id);
-            return new TokenResponseDTO(token, "Bearer");
+            return new TokenResponseDTO(token, "Bearer", user.isFirstAccess());
         } catch (Exception e) {
             throw new BadRequestException("Erro ao gerar o token de acesso");
         }
