@@ -4,6 +4,7 @@ import dysystem.com.greedfinance.dto.request.TenantCreateRequestDTO;
 import dysystem.com.greedfinance.dto.response.TenantResponseCreateDTO;
 import dysystem.com.greedfinance.dto.response.TenantResponseDTO;
 import dysystem.com.greedfinance.service.useCase.tenant.CreateTenantUseCase;
+import dysystem.com.greedfinance.service.useCase.tenant.DeleteTenantUseCase;
 import dysystem.com.greedfinance.service.useCase.tenant.FindAllTenant;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class AdminController {
 
     private final CreateTenantUseCase createTenantUseCase;
     private final FindAllTenant findAllTenant;
+    private final DeleteTenantUseCase deleteTenantUseCase;
 
     @PostMapping
     public ResponseEntity<TenantResponseCreateDTO> create(@RequestBody @Valid TenantCreateRequestDTO dto){
@@ -31,5 +33,11 @@ public class AdminController {
     @GetMapping
     public ResponseEntity<List<TenantResponseDTO>> findAll(){
         return ResponseEntity.ok(findAllTenant.execute());
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> delete(String id){
+        deleteTenantUseCase.execute(id);
+        return ResponseEntity.ok().build();
     }
 }

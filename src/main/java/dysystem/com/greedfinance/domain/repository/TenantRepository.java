@@ -11,4 +11,5 @@ public interface TenantRepository {
     List<Tenant> findAll();
     Optional<Tenant> findById(String id);
     Tenant save(Tenant dto);
+    void delete(String id);
 }

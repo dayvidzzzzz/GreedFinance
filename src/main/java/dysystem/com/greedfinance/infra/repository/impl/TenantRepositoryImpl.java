@@ -48,4 +48,9 @@ public class TenantRepositoryImpl implements TenantRepository {
         TenantEntity entity = mapper.toEntity(dto);
         return mapper.toDomain(repositoryJpa.save(entity));
     }
+
+    @Override
+    public void delete(String id) {
+        repositoryJpa.deleteById(id);
+    }
 }

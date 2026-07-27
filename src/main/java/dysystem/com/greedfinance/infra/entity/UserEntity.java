@@ -42,6 +42,9 @@ public class UserEntity {
     @Column(name = "is_active", nullable = false)
     private boolean active;
 
+    @Column(name = "first_access", nullable = false)
+    private boolean firstAccess;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
@@ -66,6 +69,7 @@ public class UserEntity {
     public void onCreation(){
         this.createAt = LocalDateTime.now();
         this.active = true;
+        this.firstAccess = false;
     }
 
 }

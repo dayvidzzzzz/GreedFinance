@@ -8,6 +8,7 @@ public record UserCreateResponseDTO(
         String email,
         String username,
         LocalDateTime createAt,
+        boolean firstAccess,
         RoleResponse role,
         TenantResponse tenant
 ) {

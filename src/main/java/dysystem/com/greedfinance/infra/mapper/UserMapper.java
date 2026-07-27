@@ -31,7 +31,8 @@ public class UserMapper {
                 .email(entity.getEmail())
                 .password(entity.getPassword())
                 .createAt(entity.getCreateAt())
-                .active(entity.isActive());
+                .active(entity.isActive())
+                .firstAccess(entity.isFirstAccess());
 
         if (entity.getTenant() != null)
             builder.tenantId(entity.getTenant().getId());
@@ -69,6 +70,7 @@ public class UserMapper {
         entity.setEmail(domain.getEmail());
         entity.setPassword(domain.getPassword());
         entity.setActive(domain.isActive());
+        entity.setFirstAccess(domain.isFirstAccess());
         entity.setCreateAt(domain.getCreateAt());
 
         if (domain.getTenantId() != null) {

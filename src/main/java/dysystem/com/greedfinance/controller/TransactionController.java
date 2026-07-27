@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/api/transactions")
 @AllArgsConstructor
-@PreAuthorize("hasRole('USER')")
+@PreAuthorize("hasAnyRole('USER', 'MASTER')")
 public class TransactionController {
 
     private final CreateIncomeTransactionUseCase incomeTransactionUseCase;

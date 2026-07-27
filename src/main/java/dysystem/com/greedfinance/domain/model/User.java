@@ -27,6 +27,7 @@ public class User implements UserDetails {
     private String password;
     private LocalDateTime createAt;
     private boolean active;
+    private boolean firstAccess;
     private String tenantId;
     private Collection<Long> roleIds;
     private List<String> accountsId;

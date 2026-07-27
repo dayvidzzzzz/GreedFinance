@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/api/accounts")
 @AllArgsConstructor
-@PreAuthorize("hasRole('USER')")
+@PreAuthorize("hasAnyRole('USER', 'MASTER')")
 public class AccountController {
 
     private final AccountSelectionList accountSelectionList;

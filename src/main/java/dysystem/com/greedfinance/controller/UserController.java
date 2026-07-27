@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/api/users")
 @AllArgsConstructor
-@PreAuthorize("hasRole('USER')")
+@PreAuthorize("hasAnyRole('USER', 'MASTER')")
 public class UserController {
 
     private final CreateUserUseCase createUserUseCase;
