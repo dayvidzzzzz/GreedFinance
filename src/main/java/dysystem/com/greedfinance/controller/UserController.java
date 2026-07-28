@@ -3,6 +3,7 @@ package dysystem.com.greedfinance.controller;
 import dysystem.com.greedfinance.dto.request.UserRequestDTO;
 import dysystem.com.greedfinance.dto.response.UserCreateResponseDTO;
 import dysystem.com.greedfinance.dto.response.UserResponseDTO;
+import dysystem.com.greedfinance.dto.response.UserUpdateResponseDTO;
 import dysystem.com.greedfinance.service.useCase.user.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class UserController {
     private final FindUserByIdUseCase findUserByIdUseCase;
     private final FindUserByUsernameUseCase findUserByUsernameUseCase;
     private final DeleteUserById deleteUserById;
+    private final UpdateUserUseCase updateUserUseCase;
 
     @PreAuthorize("hasRole('MASTER')")
     @PostMapping
@@ -33,8 +35,15 @@ public class UserController {
                 .body(createUserUseCase.execute(dto));
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> findAllUsers() {
+    @PreAuthorize("hasRole('MASTER')")
+    @GetMapping("/{id}")
+    public ResponseEntity<UserUpdateResponseDTO> update(@PathVariable String idUser,
+                                                        @RequestBody @Valid UserRequestDTO dto) {
+        return ResponseEntity.ok(updateUserUseCase.execute(idUser, dto));
+    }
+
+    @PutMapping
+    public ResponseEntity<List<UserResponseDTO>> update() {
         return ResponseEntity.ok(findAllUsersUseCase.execute());
     }
 
@@ -58,4 +67,6 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> findUserByUsername(@PathVariable String username) {
         return ResponseEntity.ok(findUserByUsernameUseCase.execute(username));
     }
+
+
 }
