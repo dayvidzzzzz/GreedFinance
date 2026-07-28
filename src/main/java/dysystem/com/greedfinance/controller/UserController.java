@@ -27,6 +27,8 @@ public class UserController {
     private final FindUserByUsernameUseCase findUserByUsernameUseCase;
     private final DeleteUserById deleteUserById;
     private final UpdateUserUseCase updateUserUseCase;
+    private final ResetUserPassword resetUserPassword;
+    private final SetUserIsActiveUserCase setUserIsActiveUserCase;
 
     @PreAuthorize("hasRole('MASTER')")
     @PostMapping
@@ -37,9 +39,9 @@ public class UserController {
 
     @PreAuthorize("hasRole('MASTER')")
     @GetMapping("/{id}")
-    public ResponseEntity<UserUpdateResponseDTO> update(@PathVariable String idUser,
+    public ResponseEntity<UserUpdateResponseDTO> update(@PathVariable String id,
                                                         @RequestBody @Valid UserRequestDTO dto) {
-        return ResponseEntity.ok(updateUserUseCase.execute(idUser, dto));
+        return ResponseEntity.ok(updateUserUseCase.execute(id, dto));
     }
 
     @PutMapping
@@ -68,5 +70,15 @@ public class UserController {
         return ResponseEntity.ok(findUserByUsernameUseCase.execute(username));
     }
 
+    @PutMapping("/reset-password/{id}")
+    public ResponseEntity<?> resetPassword(@PathVariable String id) {
+        resetUserPassword.execute(id);
+        return ResponseEntity.ok().build();
+    }
 
+    @PutMapping("/is-active/{id}")
+    public ResponseEntity<?> isActive(@PathVariable String id) {
+        setUserIsActiveUserCase.execute(id);
+        return ResponseEntity.ok().build();
+    }
 }
