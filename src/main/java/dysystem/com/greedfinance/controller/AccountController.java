@@ -1,12 +1,10 @@
 package dysystem.com.greedfinance.controller;
 
 import dysystem.com.greedfinance.dto.request.AccountRequestDTO;
+import dysystem.com.greedfinance.dto.request.LinkUsersToAccount;
 import dysystem.com.greedfinance.dto.response.AccountResponseDTO;
 import dysystem.com.greedfinance.enums.AccountType;
-import dysystem.com.greedfinance.service.useCase.account.AccountSelectionList;
-import dysystem.com.greedfinance.service.useCase.account.CreateAccountUseCase;
-import dysystem.com.greedfinance.service.useCase.account.DeleteAccountUseCase;
-import dysystem.com.greedfinance.service.useCase.account.FindAccountByIdUseCase;
+import dysystem.com.greedfinance.service.useCase.account.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +24,7 @@ public class AccountController {
     private final CreateAccountUseCase createAccountUseCase;
     private final DeleteAccountUseCase deleteAccountUseCase;
     private final FindAccountByIdUseCase findAccountById;
-
+    private final LinkUsersToAccountUseCase linkUsersToAccountUseCase;
 
     @PostMapping
     public ResponseEntity<AccountResponseDTO> create(@RequestBody @Valid AccountRequestDTO dto){
@@ -55,5 +53,12 @@ public class AccountController {
     @GetMapping("/filters/account-type/{type}")
     public ResponseEntity<List<AccountResponseDTO>> getAllByType(AccountType type){
         return ResponseEntity.ok(accountSelectionList.findAllByType(type));
+    }
+
+    @PutMapping("/link-users/{id}")
+    public ResponseEntity<?> linkUsersToAccount(@PathVariable String id,
+                                                @RequestBody @Valid LinkUsersToAccount dto){
+        linkUsersToAccountUseCase.execute(id, dto);
+        return ResponseEntity.ok().build();
     }
 }
