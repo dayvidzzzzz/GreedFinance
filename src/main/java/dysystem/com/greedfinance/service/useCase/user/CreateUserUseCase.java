@@ -6,7 +6,7 @@ import dysystem.com.greedfinance.domain.model.User;
 import dysystem.com.greedfinance.domain.repository.RoleRepository;
 import dysystem.com.greedfinance.domain.repository.TenantRepository;
 import dysystem.com.greedfinance.domain.repository.UserRepository;
-import dysystem.com.greedfinance.dto.request.UserCreateRequestDTO;
+import dysystem.com.greedfinance.dto.request.UserRequestDTO;
 import dysystem.com.greedfinance.dto.response.UserCreateResponseDTO;
 import dysystem.com.greedfinance.handler.exception.BusinessException;
 import dysystem.com.greedfinance.handler.exception.NotFoundException;
@@ -29,7 +29,7 @@ public class CreateUserUseCase {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public UserCreateResponseDTO execute(UserCreateRequestDTO dto) {
+    public UserCreateResponseDTO execute(UserRequestDTO dto) {
         if (userRepository.findByEmail(dto.email()).isPresent())
             throw new BusinessException("This email is already in use");
 

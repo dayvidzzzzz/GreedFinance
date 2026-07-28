@@ -3,7 +3,7 @@ package dysystem.com.greedfinance.dto.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record UserCreateRequestDTO(
+public record UserRequestDTO(
         @NotBlank
         String name,
         @NotBlank

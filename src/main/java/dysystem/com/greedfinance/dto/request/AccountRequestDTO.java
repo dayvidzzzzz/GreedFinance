@@ -4,7 +4,6 @@ import dysystem.com.greedfinance.enums.AccountType;
 import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 public record AccountRequestDTO (
         @NotBlank
@@ -16,7 +15,6 @@ public record AccountRequestDTO (
         @NotBlank
         String accountNumber,
         @NotBlank
-        String agencyNumber,
-        List<String> usersId
+        String agencyNumber
 ){
 }

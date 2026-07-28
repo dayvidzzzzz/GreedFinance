@@ -1,6 +1,6 @@
 package dysystem.com.greedfinance.controller;
 
-import dysystem.com.greedfinance.dto.request.UserCreateRequestDTO;
+import dysystem.com.greedfinance.dto.request.UserRequestDTO;
 import dysystem.com.greedfinance.dto.response.UserCreateResponseDTO;
 import dysystem.com.greedfinance.dto.response.UserResponseDTO;
 import dysystem.com.greedfinance.service.useCase.user.*;
@@ -28,7 +28,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('MASTER')")
     @PostMapping
-    public ResponseEntity<UserCreateResponseDTO> createUser(@RequestBody @Valid UserCreateRequestDTO dto) {
+    public ResponseEntity<UserCreateResponseDTO> createUser(@RequestBody @Valid UserRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(createUserUseCase.execute(dto));
     }
