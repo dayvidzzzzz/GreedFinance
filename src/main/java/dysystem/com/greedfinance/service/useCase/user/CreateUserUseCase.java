@@ -53,6 +53,7 @@ public class CreateUserUseCase {
                 .username(dto.username())
                 .email(dto.email())
                 .password(passwordEncoder.encode("123456"))
+                .firstAccess(true)
                 .tenantId(idTenant)
                 .roleIds(Set.of(roleUser.getId()))
                 .build();

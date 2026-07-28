@@ -69,7 +69,6 @@ public class UserEntity {
     public void onCreation(){
         this.createAt = LocalDateTime.now();
         this.active = true;
-        this.firstAccess = true;
     }
 
 }
