@@ -1,0 +1,1 @@
+SELECT 'Constraints UNIQUE já removidas anteriormente' AS status;
