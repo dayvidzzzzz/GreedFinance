@@ -28,11 +28,8 @@ public class CreateAccountUseCase {
 
     @Transactional
     public AccountResponseDTO execute(AccountRequestDTO dto) {
-        if (dto.accountNumber() == null || dto.accountNumber().isEmpty())
-            throw new BadRequestException("Número da conta não pode ser vazio");
-
-        for (int i = 0; i < dto.accountNumber().length(); i++) {
-            char c = dto.accountNumber().charAt(i);
+        for (int i = 0; i < dto.agencyNumber().length(); i++) {
+            char c = dto.agencyNumber().charAt(i);
             if (!Character.isDigit(c))
                 throw new BadRequestException("In account number this character is not a digit " + "'" + c + "'");
         }
