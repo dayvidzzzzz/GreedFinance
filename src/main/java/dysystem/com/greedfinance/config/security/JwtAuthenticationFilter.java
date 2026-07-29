@@ -1,6 +1,5 @@
 package dysystem.com.greedfinance.config.security;
 
-import dysystem.com.greedfinance.domain.model.User;
 import dysystem.com.greedfinance.utils.TenantContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -44,28 +43,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             if (tokenProvider.isValid(token)) {
                 String login = tokenProvider.extractUsername(token);
-                String tenantId = tokenProvider.extractTenant(token);
 
+                String tenantId = TenantContext.getCurrentTenantId();
                 if (tenantId == null || tenantId.isEmpty()) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(login);
-                    if (userDetails instanceof User user)
-                        tenantId = user.getTenantId();
-
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                } else {
-                    TenantContext.setCurrentTenantId(tenantId);
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(login);
-
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    tenantId = tokenProvider.extractTenant(token);
+                    if (tenantId != null && !tenantId.isEmpty())
+                        TenantContext.setCurrentTenantId(tenantId);
                 }
+
+                UserDetails userDetails = userDetailsService.loadUserByUsername(login);
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-            filterChain.doFilter(request, response);
         } catch (Exception e) {
-            throw e;
+            log.error("Erro na autenticação JWT: {}", e.getMessage());
         }
+
+        filterChain.doFilter(request, response);
     }
 }
