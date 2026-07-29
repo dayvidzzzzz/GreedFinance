@@ -9,12 +9,14 @@ import dysystem.com.greedfinance.dto.request.LoginRequestDTO;
 import dysystem.com.greedfinance.dto.response.TokenResponseDTO;
 import dysystem.com.greedfinance.handler.exception.BadRequestException;
 import dysystem.com.greedfinance.handler.exception.NotFoundException;
+import dysystem.com.greedfinance.utils.TenantContext;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -27,11 +29,14 @@ public class LoginUseCase {
 
     @Transactional
     public TokenResponseDTO execute(LoginRequestDTO loginDto, String id_tenant) {
-        User user = userRepository.findByUsernameOrEmailAndTenantId(loginDto.login(), id_tenant)
-                .orElseThrow(() -> new NotFoundException("User not found " + loginDto.login()));
+        if (id_tenant != null && !id_tenant.isEmpty())
+            TenantContext.setCurrentTenantId(id_tenant);
 
-        if (!tenantRepository.findById(id_tenant).isPresent())
-            throw new NotFoundException("This tenant don´t exists");
+        User user = findUserWithFallback(loginDto.login(), id_tenant);
+
+        if (user.getTenantId() != null && !user.getTenantId().isEmpty())
+            if (!tenantRepository.findById(user.getTenantId()).isPresent())
+                throw new NotFoundException("Tenant don´t exists");
 
         if (!user.isActive())
             throw new BadRequestException("A conta do usuário está inativa");
@@ -40,8 +45,26 @@ public class LoginUseCase {
             throw new BadRequestException("Credenciais inválidas");
 
         List<String> rolesName = user.getRoles().stream().map(Role::getName).toList();
+        String tenantForToken = user.getTenantId() != null ? user.getTenantId() : id_tenant;
+        TokenResponseDTO response = toTokenResponse(loginDto.login(), tenantForToken, user.isFirstAccess(), rolesName);
+        return response;
+    }
 
-        return toTokenResponse(loginDto.login(), id_tenant, user.isFirstAccess(), rolesName);
+
+    private User findUserWithFallback(String login, String tenantId) {
+        Optional<User> userOptional = Optional.empty();
+
+        if (tenantId != null && !tenantId.isEmpty()) {
+            userOptional = userRepository.findByUsernameOrEmailAndTenantId(login, tenantId);
+            if (userOptional.isPresent())
+                return userOptional.get();
+        }
+
+        userOptional = userRepository.findByUsernameOrEmail(login);
+        if (userOptional.isPresent())
+            return userOptional.get();
+
+        throw new NotFoundException("User not found: " + login);
     }
 
     private TokenResponseDTO toTokenResponse(String login, String tenant_id, boolean fistAccess, List<String> roles) {
