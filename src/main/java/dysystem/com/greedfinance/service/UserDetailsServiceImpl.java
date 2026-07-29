@@ -21,11 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(@NonNull String login) throws UsernameNotFoundException {
         String tenantId = TenantContext.getCurrentTenantId();
 
-        if (tenantId == null || tenantId.isEmpty())
-            throw new UsernameNotFoundException("Tenant não identificado na requisição");
-
         return userRepository.findByUsernameOrEmailAndTenantId(login, tenantId)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        "User not found: " + login + " for tenant: " + tenantId));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + login + " for tenant: " + tenantId));
     }
 }

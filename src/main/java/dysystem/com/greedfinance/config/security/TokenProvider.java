@@ -51,7 +51,7 @@ public class TokenProvider {
 
     public String extractTenant(String token) {
         Claims claims = extractClaims(token);
-        return claims.get("tenant", String.class);
+        return claims.get("tenant_id", String.class);
     }
 
     private Claims extractClaims(String token){

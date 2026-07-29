@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -29,29 +31,41 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+
         String authorizationHeader = request.getHeader("Authorization");
 
-        try {
-            if(!StringUtils.hasText(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")){
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            if(tokenProvider.isValid(authorizationHeader.substring(7))){
-                String login = tokenProvider.extractUsername(authorizationHeader.substring(7));
-                UserDetails userDetails = userDetailsService.loadUserByUsername(login);
-
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                if (userDetails instanceof User user && user.getTenantId() != null)
-                    TenantContext.setCurrentTenantId(user.getTenantId());
-
-            }
-
+        if (!StringUtils.hasText(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
-        } finally {
-            TenantContext.clear();
+            return;
+        }
+
+        String token = authorizationHeader.substring(7);
+
+        try {
+            if (tokenProvider.isValid(token)) {
+                String login = tokenProvider.extractUsername(token);
+                String tenantId = tokenProvider.extractTenant(token);
+
+                if (tenantId == null || tenantId.isEmpty()) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(login);
+                    if (userDetails instanceof User user)
+                        tenantId = user.getTenantId();
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    TenantContext.setCurrentTenantId(tenantId);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(login);
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            }
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            throw e;
         }
     }
 }
