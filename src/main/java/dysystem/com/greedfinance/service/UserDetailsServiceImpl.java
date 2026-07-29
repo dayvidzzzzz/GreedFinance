@@ -1,5 +1,6 @@
 package dysystem.com.greedfinance.service;
 
+import dysystem.com.greedfinance.domain.model.User;
 import dysystem.com.greedfinance.domain.repository.UserRepository;
 import dysystem.com.greedfinance.utils.TenantContext;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(@NonNull String login) throws UsernameNotFoundException {
         String tenantId = TenantContext.getCurrentTenantId();
+
+        var userWithoutTenant = userRepository.findByUsernameOrEmail(login);
+        if (userWithoutTenant.isPresent()) {
+            User user = userWithoutTenant.get();
+            return user;
+        }
 
         return userRepository.findByUsernameOrEmailAndTenantId(login, tenantId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + login + " for tenant: " + tenantId));

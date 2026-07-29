@@ -78,6 +78,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByUsernameOrEmail(String login) {
+        enableTenantFilter();
+        return repositoryJpa.findByUsernameOrEmail(login)
+                .map(mapper::toDomain);
+    }
+
+    @Override
     public List<User> findAllById(List<String> usersId) {
         return repositoryJpa.findAllById(usersId)
                 .stream()
