@@ -11,8 +11,11 @@ import java.util.Optional;
 @Repository
 public interface UserRepositoryJpa extends JpaRepository<UserEntity, String> {
 
-    @Query("SELECT u FROM UserEntity u LEFT JOIN FETCH u.tenant LEFT JOIN FETCH u.roles WHERE u.email = :login OR u.username = :login")
-    Optional<UserEntity> findByUsernameOrEmail(@Param("login") String login);
+    @Query("SELECT u FROM UserEntity u LEFT JOIN FETCH u.tenant LEFT JOIN FETCH u.roles " +
+            "WHERE (u.email = :login OR u.username = :login) AND u.tenant.id = :tenantId")
+    Optional<UserEntity> findByUsernameOrEmailAndTenantId(@Param("login") String login,
+                                                          @Param("tenantId") String tenantId);
+
     Optional<UserEntity> findByUsername(String username);
     Optional<UserEntity> findByEmail(String email);
     boolean existsByUsername(String username);

@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('MASTER')")
-    @GetMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserUpdateResponseDTO> update(@PathVariable String id,
                                                         @RequestBody @Valid UserRequestDTO dto) {
         return ResponseEntity.ok(updateUserUseCase.execute(id, dto));

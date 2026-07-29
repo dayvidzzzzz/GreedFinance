@@ -20,7 +20,9 @@ public class AuthController {
     private final SetUserPasswordUseCase setUserPasswordUseCase;
 
     @PostMapping("/login/{tenant_id}")
-    public ResponseEntity<TokenResponseDTO> login(@RequestBody @Valid LoginRequestDTO dto, @PathVariable String tenant_id){
+    public ResponseEntity<TokenResponseDTO> login(@RequestBody @Valid LoginRequestDTO dto,
+                                                  @PathVariable String tenant_id){
+
         return ResponseEntity.ok(loginUseCase.execute(dto, tenant_id));
     }
 

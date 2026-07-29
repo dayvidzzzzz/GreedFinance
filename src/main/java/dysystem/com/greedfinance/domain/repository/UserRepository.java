@@ -11,7 +11,7 @@ public interface UserRepository {
     User save(User user);
     Optional<User> findByEmail(String email);
     Optional<User> findByUsername(String username);
-    Optional<User> findByUsernameOrEmail(String login);
+    Optional<User> findByUsernameOrEmailAndTenantId(String login, String idTenant);
     List<User> findAllById(List<String> usersId);
     void delete(String id);
 }

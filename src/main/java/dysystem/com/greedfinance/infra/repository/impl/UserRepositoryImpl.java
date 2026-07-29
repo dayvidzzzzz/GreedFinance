@@ -71,9 +71,9 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByUsernameOrEmail(String login) {
+    public Optional<User> findByUsernameOrEmailAndTenantId(String login, String idTenant) {
         enableTenantFilter();
-        return repositoryJpa.findByUsernameOrEmail(login)
+        return repositoryJpa.findByUsernameOrEmailAndTenantId(login, idTenant)
                 .map(mapper::toDomain);
     }
 

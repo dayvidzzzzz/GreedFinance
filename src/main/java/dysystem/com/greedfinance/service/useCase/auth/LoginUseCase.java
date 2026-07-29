@@ -27,7 +27,7 @@ public class LoginUseCase {
 
     @Transactional
     public TokenResponseDTO execute(LoginRequestDTO loginDto, String id_tenant) {
-        User user = userRepository.findByUsernameOrEmail(loginDto.login())
+        User user = userRepository.findByUsernameOrEmailAndTenantId(loginDto.login(), id_tenant)
                 .orElseThrow(() -> new NotFoundException("User not found " + loginDto.login()));
 
         if (!tenantRepository.findById(id_tenant).isPresent())
