@@ -1,7 +1,9 @@
 package dysystem.com.greedfinance.utils;
 
+import dysystem.com.greedfinance.domain.model.Saving;
 import dysystem.com.greedfinance.domain.model.Tenant;
 import dysystem.com.greedfinance.domain.model.User;
+import dysystem.com.greedfinance.dto.response.SavingResponseDTO;
 import dysystem.com.greedfinance.dto.response.TenantResponseDTO;
 import dysystem.com.greedfinance.dto.response.UserResponseDTO;
 import org.springframework.stereotype.Component;
@@ -24,6 +26,23 @@ public class ToResponseUtil {
                 user.getUsername(),
                 user.isActive(),
                 user.getCreateAt()
+        );
+    }
+
+    public SavingResponseDTO toSavingResponse(Saving saving){
+        return new SavingResponseDTO(
+                saving.getId(),
+                saving.getName(),
+                saving.getDescription(),
+                saving.getCurrentAmount(),
+                saving.getTargetAmount(),
+                saving.getCreatedAt(),
+                saving.getTargetDate(),
+                saving.getUpdatedAt(),
+                saving.getConcludedAt(),
+                saving.getStatus(),
+                saving.getContributionType(),
+                saving.isAllowEarlyWithdrawal()
         );
     }
 }
