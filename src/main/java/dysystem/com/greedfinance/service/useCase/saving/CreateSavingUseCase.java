@@ -12,6 +12,7 @@ import dysystem.com.greedfinance.dto.request.CreateSavingRequestDTO;
 import dysystem.com.greedfinance.dto.response.SavingResponseDTO;
 import dysystem.com.greedfinance.handler.exception.BusinessException;
 import dysystem.com.greedfinance.handler.exception.NotFoundException;
+import dysystem.com.greedfinance.utils.SecurityUtils;
 import dysystem.com.greedfinance.utils.ToResponseUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,21 +34,23 @@ public class CreateSavingUseCase {
 
     @Transactional
     public SavingResponseDTO execute(CreateSavingRequestDTO command) {
-        validateCommand(command);
+        String userId = SecurityUtils.getCurrentUserId();
+        String tenantId = SecurityUtils.getCurrentTenantId();
 
-        User user = userRepository.findById(command.userId())
-                .orElseThrow(() -> new NotFoundException("User not found with id: " + command.userId()));
+        validateCommand(command, userId);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
 
         Account account = null;
-        if (command.accountId() != null) {
+        if (command.accountId() != null)
             account = accountRepository.findById(command.accountId())
                     .orElseThrow(() -> new NotFoundException("Account not found with id: " + command.accountId()));
-        }
 
         Tenant tenant = null;
-        if (command.tenantId() != null)
-            tenant = tenantRepository.findById(command.tenantId())
-                    .orElseThrow(() -> new NotFoundException("Tenant not found with id: " + command.tenantId()));
+        if (tenantId != null)
+            tenant = tenantRepository.findById(tenantId)
+                    .orElseThrow(() -> new NotFoundException("Tenant not found with id: " + tenantId));
 
         Saving saving = Saving.builder()
                 .name(command.name())
@@ -64,7 +67,7 @@ public class CreateSavingUseCase {
         return toResponseUtil.toSavingResponse(savingRepository.save(saving));
     }
 
-    private void validateCommand(CreateSavingRequestDTO command) {
+    private void validateCommand(CreateSavingRequestDTO command, String userId) {
         if (command.name() == null || command.name().trim().isEmpty())
             throw new BusinessException("Saving name is required");
 
@@ -77,7 +80,7 @@ public class CreateSavingUseCase {
         if (command.targetDate().isBefore(LocalDateTime.now()))
             throw new BusinessException("Target date must be in the future");
 
-        if (command.userId() == null || command.userId().trim().isEmpty())
+        if (userId == null || userId.trim().isEmpty())
             throw new BusinessException("User ID is required");
     }
 }

@@ -23,13 +23,7 @@ public record CreateSavingRequestDTO(
         ContributionType contributionType,
 
         @NotEmpty
-        String userId,
-
-        @NotEmpty
         String accountId,
-
-        @NotEmpty
-        String tenantId,
 
         boolean allowEarlyWithdrawal
 ) {
