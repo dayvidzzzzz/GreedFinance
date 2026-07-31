@@ -14,5 +14,6 @@ public interface UserRepository {
     Optional<User> findByUsernameOrEmailAndTenantId(String login, String idTenant);
     Optional<User> findByUsernameOrEmail(String login);
     List<User> findAllById(List<String> usersId);
+    List<User> findAllByActive(boolean active);
     void delete(String id);
 }

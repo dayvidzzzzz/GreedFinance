@@ -93,6 +93,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public List<User> findAllByActive(boolean active) {
+        return repositoryJpa.findAllByActive(active).stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public void delete(String id) {
         repositoryJpa.deleteById(id);
     }

@@ -7,6 +7,7 @@ public record UserResponseDTO(
         String name,
         String email,
         String username,
+        boolean isActive,
         LocalDateTime createAt
 ){
 }

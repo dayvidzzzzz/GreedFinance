@@ -22,6 +22,7 @@ public class ToResponseUtil {
                 user.getName(),
                 user.getEmail(),
                 user.getUsername(),
+                user.isActive(),
                 user.getCreateAt()
         );
     }
