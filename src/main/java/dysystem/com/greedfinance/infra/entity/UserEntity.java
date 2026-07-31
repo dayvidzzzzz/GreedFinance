@@ -65,6 +65,9 @@ public class UserEntity {
     @ManyToMany(mappedBy = "holders", fetch = FetchType.LAZY)
     private List<AccountEntity> accounts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<SavingEntity> savings = new ArrayList<>();
+
     @PrePersist
     public void onCreation(){
         this.createAt = LocalDateTime.now();

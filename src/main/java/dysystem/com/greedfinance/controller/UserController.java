@@ -29,6 +29,7 @@ public class UserController {
     private final UpdateUserUseCase updateUserUseCase;
     private final ResetUserPassword resetUserPassword;
     private final SetUserIsActiveUserCase setUserIsActiveUserCase;
+    private final FindAllUserByActiveUseCase findAllUserByActiveUseCase;
 
     @PreAuthorize("hasRole('MASTER')")
     @PostMapping
@@ -44,10 +45,17 @@ public class UserController {
         return ResponseEntity.ok(updateUserUseCase.execute(id, dto));
     }
 
-    @PutMapping
-    public ResponseEntity<List<UserResponseDTO>> update() {
+    @GetMapping
+    public ResponseEntity<List<UserResponseDTO>> findAll() {
         return ResponseEntity.ok(findAllUsersUseCase.execute());
     }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<UserResponseDTO>> findAllByActive(
+            @RequestParam(name = "active", defaultValue = "true") boolean active) {
+        return ResponseEntity.ok(findAllUserByActiveUseCase.execute(active));
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> findUserById(@PathVariable String id) {

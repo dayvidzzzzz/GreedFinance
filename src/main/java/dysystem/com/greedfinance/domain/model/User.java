@@ -31,7 +31,7 @@ public class User implements UserDetails {
     private String tenantId;
     private Collection<Long> roleIds;
     private List<String> accountsId;
-
+    private List<Long> savingIds;
     private Collection<Role> roles;
 
     @Override

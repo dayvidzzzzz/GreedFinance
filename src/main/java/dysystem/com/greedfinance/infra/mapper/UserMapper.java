@@ -5,13 +5,16 @@ import dysystem.com.greedfinance.domain.model.User;
 import dysystem.com.greedfinance.handler.exception.NotFoundException;
 import dysystem.com.greedfinance.infra.entity.AccountEntity;
 import dysystem.com.greedfinance.infra.entity.RoleEntity;
+import dysystem.com.greedfinance.infra.entity.SavingEntity;
 import dysystem.com.greedfinance.infra.entity.UserEntity;
 import dysystem.com.greedfinance.infra.repository.jpa.RoleRepositoryJpa;
+import dysystem.com.greedfinance.infra.repository.jpa.SavingRepositoryJpa;
 import dysystem.com.greedfinance.infra.repository.jpa.TenantRepositoryJpa;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Component
@@ -20,6 +23,7 @@ public class UserMapper {
 
     private final TenantRepositoryJpa tenantRepositoryJpa;
     private final RoleRepositoryJpa roleRepositoryJpa;
+    private final SavingRepositoryJpa savingRepositoryJpa;
 
     public User toDomain(UserEntity entity) {
         if (entity == null) return null;
@@ -57,6 +61,16 @@ public class UserMapper {
             );
         }
 
+        if (entity.getSavings() != null && !entity.getSavings().isEmpty()) {
+            builder.savingIds(
+                    entity.getSavings().stream()
+                            .map(SavingEntity::getId)
+                            .collect(Collectors.toList())
+            );
+        } else {
+            builder.savingIds(Collections.emptyList());
+        }
+
         return builder.build();
     }
 
@@ -87,6 +101,11 @@ public class UserMapper {
                     .collect(Collectors.toList());
             entity.setRoles(roleRepositoryJpa.findAllById(roleIds));
         }
+
+        if (domain.getSavingIds() != null && domain.getSavingIds().isEmpty())
+            entity.setSavings(savingRepositoryJpa.findAllById(domain.getSavingIds())
+                    .stream()
+                    .toList());
 
         return entity;
     }

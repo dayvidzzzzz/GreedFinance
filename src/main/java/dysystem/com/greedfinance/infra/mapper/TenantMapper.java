@@ -64,6 +64,16 @@ public class TenantMapper {
             builder.transactionsId(Collections.emptyList());
         }
 
+        if (entity.getSavings() != null && !entity.getSavings().isEmpty()) {
+            builder.savingsId(
+                    entity.getSavings().stream()
+                            .map(SavingEntity::getId)
+                            .collect(Collectors.toList())
+            );
+        } else {
+            builder.savingsId(Collections.emptyList());
+        }
+
         return builder.build();
     }
 
@@ -75,6 +85,8 @@ public class TenantMapper {
         entity.setName(domain.getName());
         entity.setAccounts(Collections.emptyList());
         entity.setTransactions(Collections.emptyList());
+        entity.setCategories(Collections.emptyList());
+        entity.setSavings(Collections.emptyList());
         return entity;
     }
 }
