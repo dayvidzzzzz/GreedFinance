@@ -31,6 +31,7 @@ public class AddAmountToSavingUseCase {
     private final TenantRepository tenantRepository;
     private final ToResponseUtil toResponseUtil;
     private final TransactionRepository transactionRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     public SavingResponseDTO execute(Long id, SavingAmountRequestDTO dto) {
@@ -58,6 +59,15 @@ public class AddAmountToSavingUseCase {
         validateTargetAmount(saving, dto.amount());
         validateSufficientBalance(account, dto.amount());
 
+        Category category = categoryRepository.findByName("Investimento")
+                .orElseGet(() -> {
+                    Category newCategory = Category.builder()
+                                    .name("Investimento")
+                                    .tenantId(tenant.getId())
+                                    .build();
+                    return categoryRepository.save(newCategory);
+                });
+
         Transaction transaction = Transaction.builder()
                 .amount(dto.amount())
                 .transactionStatus(TransactionStatus.COMPLETED)
@@ -65,7 +75,7 @@ public class AddAmountToSavingUseCase {
                 .createdAt(LocalDateTime.now())
                 .accountId(account.getId())
                 .tenantId(tenant.getId())
-                .categoryId(null)
+                .categoryId(category.getId())
                 .build();
 
         Transaction savedTransaction = transactionRepository.save(transaction);
