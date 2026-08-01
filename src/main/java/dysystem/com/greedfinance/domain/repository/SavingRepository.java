@@ -1,6 +1,7 @@
 package dysystem.com.greedfinance.domain.repository;
 
 import dysystem.com.greedfinance.domain.model.Saving;
+import dysystem.com.greedfinance.enums.SavingStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.Optional;
 public interface SavingRepository {
     Saving save(Saving data);
     Optional<Saving> findById(Long id);
+    List<Saving> findAllByStatus(SavingStatus status);
     List<Saving> findAll();
     void delete(Long id);
 }

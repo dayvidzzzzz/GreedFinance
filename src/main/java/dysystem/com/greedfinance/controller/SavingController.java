@@ -1,11 +1,11 @@
 package dysystem.com.greedfinance.controller;
 
 import dysystem.com.greedfinance.dto.request.CreateSavingRequestDTO;
+import dysystem.com.greedfinance.dto.request.SavingAmountRequestDTO;
+import dysystem.com.greedfinance.dto.request.SavingRequestStatusDTO;
 import dysystem.com.greedfinance.dto.response.SavingResponseDTO;
-import dysystem.com.greedfinance.service.useCase.saving.CreateSavingUseCase;
-import dysystem.com.greedfinance.service.useCase.saving.DeleteSavingUseCase;
-import dysystem.com.greedfinance.service.useCase.saving.FindAllSavingUseCase;
-import dysystem.com.greedfinance.service.useCase.saving.FindSavingByIdUseCase;
+import dysystem.com.greedfinance.enums.SavingStatus;
+import dysystem.com.greedfinance.service.useCase.saving.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,12 +25,15 @@ public class SavingController {
     private final FindAllSavingUseCase findAllSavingUseCase;
     private final FindSavingByIdUseCase findSavingByIdUseCase;
     private final DeleteSavingUseCase deleteSavingUseCase;
+    private final ChangeSavingStatusUseCase changeSavingStatusUseCase;
+    private final AddAmountToSavingUseCase addAmountToSavingUseCase;
+    private final FindSavingByStatusUseCase findSavingByStatusUseCase;
 
     @PostMapping
-    public ResponseEntity<SavingResponseDTO> createSaving(@Valid @RequestBody CreateSavingRequestDTO request){
+    public ResponseEntity<SavingResponseDTO> createSaving(@Valid @RequestBody CreateSavingRequestDTO request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                    .body(createSavingUseCase.execute(request));
+                .body(createSavingUseCase.execute(request));
     }
 
     @GetMapping
@@ -47,5 +50,23 @@ public class SavingController {
     public ResponseEntity<Void> deleteSaving(@PathVariable Long id) {
         deleteSavingUseCase.execute(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/status/{id}")
+    public ResponseEntity<Void> changeStatus(@PathVariable Long id,
+                                             @RequestBody @Valid SavingRequestStatusDTO dto) {
+        changeSavingStatusUseCase.execute(id, dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/add-amount/{id}")
+    public ResponseEntity<SavingResponseDTO> addAmountSaving (@PathVariable Long id,
+                                                              @RequestBody @Valid SavingAmountRequestDTO dto){
+        return ResponseEntity.ok(addAmountToSavingUseCase.execute(id, dto));
+    }
+
+    @GetMapping("/filter/status/{status}")
+    public ResponseEntity<List<SavingResponseDTO>> findAllByStatus(@PathVariable SavingStatus status){
+        return ResponseEntity.ok(findSavingByStatusUseCase.execute(status));
     }
 }

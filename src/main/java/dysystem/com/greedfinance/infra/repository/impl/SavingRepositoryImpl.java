@@ -2,6 +2,7 @@ package dysystem.com.greedfinance.infra.repository.impl;
 
 import dysystem.com.greedfinance.domain.model.Saving;
 import dysystem.com.greedfinance.domain.repository.SavingRepository;
+import dysystem.com.greedfinance.enums.SavingStatus;
 import dysystem.com.greedfinance.infra.entity.SavingEntity;
 import dysystem.com.greedfinance.infra.mapper.SavingMapper;
 import dysystem.com.greedfinance.infra.repository.jpa.SavingRepositoryJpa;
@@ -45,6 +46,13 @@ public class SavingRepositoryImpl implements SavingRepository {
         enableTenantFilter();
         return repositoryJpa.findById(id)
                 .map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Saving> findAllByStatus(SavingStatus status) {
+        return repositoryJpa.findAllByStatus(status).stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 
     @Override
