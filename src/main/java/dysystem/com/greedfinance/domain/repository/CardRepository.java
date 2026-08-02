@@ -10,4 +10,6 @@ public interface CardRepository {
     Optional<Card> findById(String id);
     void delete(String id);
     List<Card> findAll();
+    Optional<Card> findByName(String name);
+
 }

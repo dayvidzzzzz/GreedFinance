@@ -5,13 +5,15 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
-public record CreateTransactionRequestDTO(
-        @NotNull
-        BigDecimal amount,
+public record CardRequestDTO(
+
         @NotBlank
-        String accountId,
+        String name,
+
         @NotNull
-        Long categoryId,
-        String cardId
+        BigDecimal limit,
+
+        @NotBlank
+        String accountId
 ){
 }

@@ -1,8 +1,10 @@
 package dysystem.com.greedfinance.utils;
 
+import dysystem.com.greedfinance.domain.model.Card;
 import dysystem.com.greedfinance.domain.model.Saving;
 import dysystem.com.greedfinance.domain.model.Tenant;
 import dysystem.com.greedfinance.domain.model.User;
+import dysystem.com.greedfinance.dto.response.CardResponseDTO;
 import dysystem.com.greedfinance.dto.response.SavingResponseDTO;
 import dysystem.com.greedfinance.dto.response.TenantResponseDTO;
 import dysystem.com.greedfinance.dto.response.UserResponseDTO;
@@ -44,5 +46,15 @@ public class ToResponseUtil {
                 saving.getContributionType(),
                 saving.isAllowEarlyWithdrawal()
         );
+    }
+
+    public CardResponseDTO toCardResponse(Card card){
+        return new CardResponseDTO(
+                card.getId(),
+                card.getName(),
+                card.getLimit(),
+                card.isActive()
+        );
+
     }
 }
