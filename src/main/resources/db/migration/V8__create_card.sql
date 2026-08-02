@@ -1,4 +1,4 @@
-CREATE TABLE card (
+CREATE TABLE cards (
     id VARCHAR(36) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     card_limit DECIMAL(19, 2) DEFAULT 0.00,
