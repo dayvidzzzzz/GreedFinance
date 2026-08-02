@@ -83,6 +83,9 @@ public class AccountEntity {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
     private List<TransactionEntity> transactions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<CardEntity> cards = new ArrayList<>();
+
     @PrePersist
     public void onCreation(){
         this.createdAt = LocalDateTime.now();

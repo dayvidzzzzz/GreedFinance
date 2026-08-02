@@ -31,4 +31,6 @@ public class Account {
     private String tenantId;
     private List<String> holderIds = new ArrayList<>();;
     private List<Long> transactionsId = new ArrayList<>();;
+    private List<String> cardsId = new ArrayList<>();
+
 }

@@ -2,8 +2,6 @@ package dysystem.com.greedfinance.infra.mapper;
 
 import dysystem.com.greedfinance.domain.model.Tenant;
 import dysystem.com.greedfinance.infra.entity.*;
-import dysystem.com.greedfinance.infra.repository.jpa.AccountRepositoryJpa;
-import dysystem.com.greedfinance.infra.repository.jpa.TransactionRepositoryJpa;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +11,6 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class TenantMapper {
-
-    private final AccountRepositoryJpa accountRepositoryJpa;
-    private final TransactionRepositoryJpa transactionRepositoryJpa;
 
     public Tenant toDomain(TenantEntity entity) {
         if (entity == null) return null;
@@ -74,6 +69,16 @@ public class TenantMapper {
             builder.savingsId(Collections.emptyList());
         }
 
+        if (entity.getCards() != null && !entity.getCards().isEmpty()) {
+            builder.cardsId(
+                    entity.getCards().stream()
+                            .map(CardEntity::getId)
+                            .collect(Collectors.toList())
+            );
+        } else {
+            builder.cardsId(Collections.emptyList());
+        }
+
         return builder.build();
     }
 
@@ -87,6 +92,7 @@ public class TenantMapper {
         entity.setTransactions(Collections.emptyList());
         entity.setCategories(Collections.emptyList());
         entity.setSavings(Collections.emptyList());
+        entity.setCards(Collections.emptyList());
         return entity;
     }
 }

@@ -1,0 +1,25 @@
+package dysystem.com.greedfinance.domain.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Card {
+
+    private String id;
+    private String name;
+    private BigDecimal limit;
+    private LocalDateTime createAt;
+    private LocalDateTime updateAt;
+    private boolean active;
+    private String accountId;
+    private String tenantId;
+}
