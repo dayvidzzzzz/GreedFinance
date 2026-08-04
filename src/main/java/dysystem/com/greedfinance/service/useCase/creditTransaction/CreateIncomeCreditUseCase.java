@@ -1,4 +1,4 @@
-package dysystem.com.greedfinance.service.useCase.creditService;
+package dysystem.com.greedfinance.service.useCase.creditTransaction;
 
 import dysystem.com.greedfinance.domain.model.*;
 import dysystem.com.greedfinance.domain.repository.CardRepository;

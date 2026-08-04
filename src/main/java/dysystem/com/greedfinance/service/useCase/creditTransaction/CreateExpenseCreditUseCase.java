@@ -1,4 +1,4 @@
-package dysystem.com.greedfinance.service.useCase.creditService;
+package dysystem.com.greedfinance.service.useCase.creditTransaction;
 
 import dysystem.com.greedfinance.domain.model.Account;
 import dysystem.com.greedfinance.domain.model.Card;
@@ -74,6 +74,7 @@ public class CreateExpenseCreditUseCase {
         CreditTransactions creditTransactions = CreditTransactions.builder()
                 .amount(dto.amount())
                 .cardId(card.getId())
+                .categoryId(category.getId())
                 .tenantId(tenantId)
                 .transactionStatus(status)
                 .build();
