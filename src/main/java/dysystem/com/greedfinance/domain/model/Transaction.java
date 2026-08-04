@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -24,4 +25,5 @@ public class Transaction {
     private String accountId;
     private String tenantId;
     private Long categoryId;
+    private List<Long> creditTransactionsId;
 }

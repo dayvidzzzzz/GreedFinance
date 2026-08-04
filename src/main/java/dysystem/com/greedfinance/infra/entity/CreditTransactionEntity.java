@@ -57,6 +57,10 @@ public class CreditTransactionEntity{
     @JoinColumn(name = "card_id", nullable = false)
     private CardEntity card;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transaction_id", nullable = false)
+    private TransactionEntity transaction;
+
     @PrePersist
     protected void onCreation(){
         if (this.transactionStatus == null)

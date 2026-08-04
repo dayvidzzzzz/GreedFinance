@@ -2,12 +2,16 @@ package dysystem.com.greedfinance.infra.mapper;
 
 import dysystem.com.greedfinance.domain.model.Transaction;
 import dysystem.com.greedfinance.handler.exception.NotFoundException;
+import dysystem.com.greedfinance.infra.entity.CreditTransactionEntity;
 import dysystem.com.greedfinance.infra.entity.TransactionEntity;
 import dysystem.com.greedfinance.infra.repository.jpa.AccountRepositoryJpa;
 import dysystem.com.greedfinance.infra.repository.jpa.CategoryRepositoryJpa;
+import dysystem.com.greedfinance.infra.repository.jpa.CreditTransactionsRepositoryJpa;
 import dysystem.com.greedfinance.infra.repository.jpa.TenantRepositoryJpa;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
 
 @Component
 @AllArgsConstructor
@@ -16,6 +20,7 @@ public class TransactionMapper {
     private final CategoryRepositoryJpa categoryRepositoryJpa;
     private final TenantRepositoryJpa tenantRepositoryJpa;
     private final AccountRepositoryJpa accountRepositoryJpa;
+    private final CreditTransactionsRepositoryJpa creditTransactionsRepositoryJpa;
 
     public Transaction toDomain(TransactionEntity entity){
         if (entity == null) return null;
@@ -35,6 +40,16 @@ public class TransactionMapper {
 
         if (entity.getCategory() != null)
                 builder.categoryId(entity.getCategory().getId());
+
+        if (entity.getCreditTransactions() != null) {
+            builder.creditTransactionsId(
+                    entity.getCreditTransactions().stream()
+                            .map(CreditTransactionEntity::getId)
+                            .toList()
+            );
+        } else {
+            builder.creditTransactionsId(Collections.emptyList());
+        }
 
         return builder.build();
     }
@@ -60,6 +75,11 @@ public class TransactionMapper {
         if (domain.getTenantId() != null)
             transaction.setTenant(tenantRepositoryJpa.findById(domain.getTenantId())
                     .orElseThrow(() -> new NotFoundException("Tenant not found")));
+
+        if (domain.getCreditTransactionsId() != null)
+            transaction.setCreditTransactions(creditTransactionsRepositoryJpa.findAllById(domain.getCreditTransactionsId()));
+        else
+            transaction.setCreditTransactions(Collections.emptyList());
 
         return transaction;
     }

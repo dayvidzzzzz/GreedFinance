@@ -22,4 +22,5 @@ public class CreditTransactions{
     private String tenantId;
     private Long categoryId;
     private String cardId;
+    private Long transactionId;
 }
