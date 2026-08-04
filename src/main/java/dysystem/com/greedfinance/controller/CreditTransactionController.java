@@ -6,12 +6,15 @@ import dysystem.com.greedfinance.dto.response.CreditTransactionResponseDTO;
 import dysystem.com.greedfinance.service.useCase.creditService.CreateExpenseCreditUseCase;
 import dysystem.com.greedfinance.service.useCase.creditService.CreateIncomeCreditUseCase;
 import dysystem.com.greedfinance.service.useCase.creditService.DeleteCreditTransactionUseCase;
+import dysystem.com.greedfinance.service.useCase.creditService.FindAllCreditTransactionsUseCase;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/api/credit-transactions")
@@ -22,24 +25,30 @@ public class CreditTransactionController {
     private final CreateExpenseCreditUseCase createExpenseCreditUseCase;
     private final CreateIncomeCreditUseCase createIncomeCreditUseCase;
     private final DeleteCreditTransactionUseCase deleteCreditTransactionUseCase;
+    private final FindAllCreditTransactionsUseCase findAllCreditTransactionsUseCase;
 
     @PostMapping("/expense")
-    public ResponseEntity<CreditTransactionResponseDTO> createExpense(@RequestBody @Valid ExpenseTransactionDTO dto){
+    public ResponseEntity<CreditTransactionResponseDTO> createExpense(@RequestBody @Valid ExpenseTransactionDTO dto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                    .body(createExpenseCreditUseCase.execute(dto));
+                .body(createExpenseCreditUseCase.execute(dto));
     }
 
     @PostMapping("/income")
-    public ResponseEntity<CreditTransactionResponseDTO> createIncome(@RequestBody @Valid CreateTransactionRequestDTO dto){
+    public ResponseEntity<CreditTransactionResponseDTO> createIncome(@RequestBody @Valid CreateTransactionRequestDTO dto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                    .body(createIncomeCreditUseCase.execute(dto));
+                .body(createIncomeCreditUseCase.execute(dto));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         deleteCreditTransactionUseCase.execute(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CreditTransactionResponseDTO>> findAll() {
+        return ResponseEntity.ok(findAllCreditTransactionsUseCase.execute());
     }
 }
