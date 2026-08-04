@@ -83,6 +83,10 @@ public class CreateExpenseCreditUseCase {
         card.setLimit(newLimit);
         cardRepository.save(card);
 
+        BigDecimal newBalance = account.getBalance().subtract(dto.amount());
+        account.setBalance(newBalance);
+        accountRepository.save(account);
+
         return toResponseUtil.toCreditTransaction(creditTransactionRepository.save(creditTransactions));
     }
 
