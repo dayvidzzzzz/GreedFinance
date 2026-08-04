@@ -69,6 +69,9 @@ public class CardEntity {
         if (this.limit == null)
             this.limit = BigDecimal.ZERO;
 
+        if (this.balance == null)
+            this.balance = BigDecimal.ZERO;
+
         this.active = true;
     }
 }

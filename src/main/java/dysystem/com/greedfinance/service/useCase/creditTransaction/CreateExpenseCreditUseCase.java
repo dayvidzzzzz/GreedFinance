@@ -41,8 +41,8 @@ public class CreateExpenseCreditUseCase {
         Account account = accountRepository.findById(card.getAccountId())
                 .orElseThrow(() -> new NotFoundException("Account not found"));
 
+        validateCardLimit(card.getLimit(), card.getBalance(), dto.amount());
         validateAccountBalance(account.getBalance(), dto.amount());
-
         String tenantId = SecurityUtils.getCurrentTenantId();
 
         Category category = categoryRepository.findByName("Credito")
@@ -65,7 +65,7 @@ public class CreateExpenseCreditUseCase {
                 .categoryId(category.getId())
                 .tenantId(tenantId)
                 .build();
-        transactionRepository.save(transaction);
+        transaction = transactionRepository.save(transaction);
 
         CreditTransactions creditTransactions = CreditTransactions.builder()
                 .amount(dto.amount())
@@ -74,23 +74,32 @@ public class CreateExpenseCreditUseCase {
                 .tenantId(tenantId)
                 .transactionStatus(status)
                 .transactionType(TransactionType.EXPENSE)
+                .transactionId(transaction.getId())
                 .build();
 
-        BigDecimal newLimit = card.getLimit().add(dto.amount());
-        card.setLimit(newLimit);
+        BigDecimal newCardBalance = card.getBalance().subtract(dto.amount());
+        card.setBalance(newCardBalance);
         cardRepository.save(card);
 
-        BigDecimal newBalance = account.getBalance().subtract(dto.amount());
-        account.setBalance(newBalance);
+        BigDecimal newAccountBalance = account.getBalance().subtract(dto.amount());
+        account.setBalance(newAccountBalance);
         accountRepository.save(account);
 
-        return toCreditTransaction(creditTransactionRepository.save(creditTransactions), card.getName());
+        CreditTransactions savedTransaction = creditTransactionRepository.save(creditTransactions);
+
+        return toCreditTransaction(savedTransaction, card.getName());
     }
 
-    private void validateAccountBalance(BigDecimal balance, BigDecimal amount) {
+    private void validateCardLimit(BigDecimal limit, BigDecimal currentBalance, BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0)
             throw new BusinessException("Amount must be greater than zero");
 
+        BigDecimal newBalance = currentBalance.add(amount);
+        if (newBalance.compareTo(limit) > 0)
+            throw new BusinessException("This purchase would exceed your card limit.");
+    }
+
+    private void validateAccountBalance(BigDecimal balance, BigDecimal amount) {
         if (balance.compareTo(amount) < 0)
             throw new BusinessException("You don't have enough money in your account");
     }

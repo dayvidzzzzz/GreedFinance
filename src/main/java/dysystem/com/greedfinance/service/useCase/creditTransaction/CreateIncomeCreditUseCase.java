@@ -48,8 +48,8 @@ public class CreateIncomeCreditUseCase {
             throw new BusinessException("Insufficient card limit. Available: " + card.getLimit() +
                     ", Requested: " + dto.amount());
 
-        BigDecimal newLimit = card.getLimit().subtract(dto.amount());
-        card.setLimit(newLimit);
+        BigDecimal newCardBalance = card.getBalance().add(dto.amount());
+        card.setBalance(newCardBalance);
         cardRepository.save(card);
 
         CreditTransactions creditTransactions = CreditTransactions.builder()

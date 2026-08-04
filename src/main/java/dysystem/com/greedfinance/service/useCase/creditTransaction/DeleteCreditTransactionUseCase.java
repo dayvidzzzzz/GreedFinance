@@ -38,19 +38,19 @@ public class DeleteCreditTransactionUseCase {
         if (transactionRepository.findById(creditTransactions.getTransactionId()).isPresent())
             transactionRepository.deleteById(creditTransactions.getTransactionId());
 
-        BigDecimal newLimit;
-        BigDecimal newBalance;
+        BigDecimal newCardBalance;
+        BigDecimal newAccountBalance;
 
         if (creditTransactions.getTransactionType().equals(TransactionType.INCOME)) {
-            newLimit = card.getLimit().subtract(creditTransactions.getAmount());
+            newCardBalance = card.getBalance().subtract(creditTransactions.getAmount());
         } else {
-            newLimit = card.getLimit().add(creditTransactions.getAmount());
-            newBalance = account.getBalance().add(creditTransactions.getAmount());
-            account.setBalance(newBalance);
+            newCardBalance = card.getBalance().add(creditTransactions.getAmount());
+            newAccountBalance = account.getBalance().add(creditTransactions.getAmount());
+            account.setBalance(newAccountBalance);
             accountRepository.save(account);
         }
 
-        card.setLimit(newLimit);
+        card.setBalance(newCardBalance);
         cardRepository.save(card);
 
         creditTransactionRepository.deleteById(id);
