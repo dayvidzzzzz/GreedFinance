@@ -2,6 +2,7 @@ package dysystem.com.greedfinance.infra.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import dysystem.com.greedfinance.enums.TransactionStatus;
+import dysystem.com.greedfinance.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,6 +35,10 @@ public class CreditTransactionEntity{
     @Column(name = "transaction_status")
     @Enumerated(EnumType.STRING)
     private TransactionStatus transactionStatus;
+
+    @Column(name = "transaction_type")
+    @Enumerated(EnumType.STRING)
+    private TransactionType transactionType;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")

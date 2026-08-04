@@ -2,6 +2,7 @@ package dysystem.com.greedfinance.controller;
 
 import dysystem.com.greedfinance.dto.request.CreateTransactionRequestDTO;
 import dysystem.com.greedfinance.dto.request.ExpenseTransactionDTO;
+import dysystem.com.greedfinance.dto.response.CreditExpenseResponseDTO;
 import dysystem.com.greedfinance.dto.response.CreditTransactionResponseDTO;
 import dysystem.com.greedfinance.service.useCase.creditTransaction.CreateExpenseCreditUseCase;
 import dysystem.com.greedfinance.service.useCase.creditTransaction.CreateIncomeCreditUseCase;
@@ -28,7 +29,7 @@ public class CreditTransactionController {
     private final FindAllCreditTransactionsUseCase findAllCreditTransactionsUseCase;
 
     @PostMapping("/expense")
-    public ResponseEntity<CreditTransactionResponseDTO> createExpense(@RequestBody @Valid ExpenseTransactionDTO dto) {
+    public ResponseEntity<CreditExpenseResponseDTO> createExpense(@RequestBody @Valid ExpenseTransactionDTO dto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createExpenseCreditUseCase.execute(dto));

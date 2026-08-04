@@ -1,0 +1,1 @@
+ALTER TABLE credit_transaction ADD COLUMN transaction_type VARCHAR(50);

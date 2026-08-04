@@ -4,6 +4,8 @@ import dysystem.com.greedfinance.domain.model.*;
 import dysystem.com.greedfinance.dto.response.*;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class ToResponseUtil {
 
@@ -56,7 +58,8 @@ public class ToResponseUtil {
         return new CreditTransactionResponseDTO(
                 creditTransactions.getId(),
                 creditTransactions.getAmount(),
-                creditTransactions.getTransactionStatus()
+                creditTransactions.getTransactionStatus(),
+                creditTransactions.getCreatedAt()
         );
     }
 }

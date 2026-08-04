@@ -11,13 +11,12 @@ import dysystem.com.greedfinance.domain.repository.CategoryRepository;
 import dysystem.com.greedfinance.domain.repository.CreditTransactionRepository;
 import dysystem.com.greedfinance.domain.repository.TransactionRepository;
 import dysystem.com.greedfinance.dto.request.ExpenseTransactionDTO;
-import dysystem.com.greedfinance.dto.response.CreditTransactionResponseDTO;
+import dysystem.com.greedfinance.dto.response.CreditExpenseResponseDTO;
 import dysystem.com.greedfinance.enums.TransactionStatus;
 import dysystem.com.greedfinance.enums.TransactionType;
 import dysystem.com.greedfinance.handler.exception.BusinessException;
 import dysystem.com.greedfinance.handler.exception.NotFoundException;
 import dysystem.com.greedfinance.utils.SecurityUtils;
-import dysystem.com.greedfinance.utils.ToResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +32,9 @@ public class CreateExpenseCreditUseCase {
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
     private final AccountRepository accountRepository;
-    private final ToResponseUtil toResponseUtil;
 
     @Transactional
-    public CreditTransactionResponseDTO execute(ExpenseTransactionDTO dto) {
-        validateTransaction(dto.amount());
-
+    public CreditExpenseResponseDTO execute(ExpenseTransactionDTO dto) {
         Card card = cardRepository.findById(dto.idCard())
                 .orElseThrow(() -> new NotFoundException("Card not found"));
 
@@ -77,6 +73,7 @@ public class CreateExpenseCreditUseCase {
                 .categoryId(category.getId())
                 .tenantId(tenantId)
                 .transactionStatus(status)
+                .transactionType(TransactionType.EXPENSE)
                 .build();
 
         BigDecimal newLimit = card.getLimit().add(dto.amount());
@@ -87,16 +84,24 @@ public class CreateExpenseCreditUseCase {
         account.setBalance(newBalance);
         accountRepository.save(account);
 
-        return toResponseUtil.toCreditTransaction(creditTransactionRepository.save(creditTransactions));
-    }
-
-    private void validateTransaction(BigDecimal amount) {
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0)
-            throw new BusinessException("Amount must be greater than zero");
+        return toCreditTransaction(creditTransactionRepository.save(creditTransactions), card.getName());
     }
 
     private void validateAccountBalance(BigDecimal balance, BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0)
+            throw new BusinessException("Amount must be greater than zero");
+
         if (balance.compareTo(amount) < 0)
             throw new BusinessException("You don't have enough money in your account");
+    }
+
+    private CreditExpenseResponseDTO toCreditTransaction(CreditTransactions creditTransactions, String cardName){
+        return new CreditExpenseResponseDTO(
+                creditTransactions.getId(),
+                creditTransactions.getAmount(),
+                creditTransactions.getTransactionStatus(),
+                creditTransactions.getCreatedAt(),
+                cardName
+        );
     }
 }

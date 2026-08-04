@@ -5,10 +5,11 @@ import dysystem.com.greedfinance.enums.TransactionStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public record  CreditTransactionResponseDTO(
+public record CreditExpenseResponseDTO(
         Long id,
         BigDecimal amount,
         TransactionStatus status,
-        LocalDateTime createAt
-){
+        LocalDateTime createAt,
+        String cardName
+) {
 }

@@ -29,6 +29,7 @@ public class CreditTransactionMapper {
         transactions.setAmount(entity.getAmount());
         transactions.setCreatedAt(entity.getCreatedAt());
         transactions.setTransactionStatus(entity.getTransactionStatus());
+        transactions.setTransactionType(entity.getTransactionType());
 
         if (entity.getTenant() != null)
             transactions.setTenantId(entity.getTenant().getId());
@@ -51,6 +52,7 @@ public class CreditTransactionMapper {
         transaction.setId(domain.getId());
         transaction.setAmount(domain.getAmount());
         transaction.setTransactionStatus(domain.getTransactionStatus());
+        transaction.setTransactionType(domain.getTransactionType());
         transaction.setCreatedAt(domain.getCreatedAt());
 
         if (domain.getCategoryId() != null)

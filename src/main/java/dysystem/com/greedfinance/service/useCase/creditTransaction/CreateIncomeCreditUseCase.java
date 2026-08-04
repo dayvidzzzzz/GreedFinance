@@ -7,6 +7,7 @@ import dysystem.com.greedfinance.domain.repository.CreditTransactionRepository;
 import dysystem.com.greedfinance.domain.repository.TenantRepository;
 import dysystem.com.greedfinance.dto.request.CreateTransactionRequestDTO;
 import dysystem.com.greedfinance.dto.response.CreditTransactionResponseDTO;
+import dysystem.com.greedfinance.enums.TransactionType;
 import dysystem.com.greedfinance.handler.exception.BusinessException;
 import dysystem.com.greedfinance.handler.exception.NotFoundException;
 import dysystem.com.greedfinance.utils.SecurityUtils;
@@ -47,13 +48,13 @@ public class CreateIncomeCreditUseCase {
             throw new BusinessException("Insufficient card limit. Available: " + card.getLimit() +
                     ", Requested: " + dto.amount());
 
-
         BigDecimal newLimit = card.getLimit().subtract(dto.amount());
         card.setLimit(newLimit);
         cardRepository.save(card);
 
         CreditTransactions creditTransactions = CreditTransactions.builder()
                 .amount(dto.amount())
+                .transactionType(TransactionType.INCOME)
                 .cardId(card.getId())
                 .categoryId(category.getId())
                 .tenantId(tenant.getId())
