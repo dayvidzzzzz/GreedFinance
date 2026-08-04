@@ -2,7 +2,7 @@ package dysystem.com.greedfinance.service.useCase.saving;
 
 import dysystem.com.greedfinance.domain.model.*;
 import dysystem.com.greedfinance.domain.repository.*;
-import dysystem.com.greedfinance.dto.request.SavingAmountRequestDTO;
+import dysystem.com.greedfinance.dto.request.AmountRequestDTO;
 import dysystem.com.greedfinance.dto.response.SavingResponseDTO;
 import dysystem.com.greedfinance.enums.ContributionType;
 import dysystem.com.greedfinance.enums.SavingStatus;
@@ -34,7 +34,7 @@ public class AddAmountToSavingUseCase {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public SavingResponseDTO execute(Long id, SavingAmountRequestDTO dto) {
+    public SavingResponseDTO execute(Long id, AmountRequestDTO dto) {
         if (dto.amount() == null || dto.amount().compareTo(BigDecimal.ZERO) <= 0)
             throw new BusinessException("Amount must be greater than zero");
 

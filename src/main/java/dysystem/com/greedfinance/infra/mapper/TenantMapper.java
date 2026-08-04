@@ -79,6 +79,16 @@ public class TenantMapper {
             builder.cardsId(Collections.emptyList());
         }
 
+        if (entity.getCreditTransactions() != null && !entity.getCreditTransactions().isEmpty()) {
+            builder.creditTransactionsId(
+                    entity.getCreditTransactions().stream()
+                            .map(CreditTransactionEntity::getId)
+                            .collect(Collectors.toList())
+            );
+        } else {
+            builder.creditTransactionsId(Collections.emptyList());
+        }
+
         return builder.build();
     }
 
@@ -93,6 +103,7 @@ public class TenantMapper {
         entity.setCategories(Collections.emptyList());
         entity.setSavings(Collections.emptyList());
         entity.setCards(Collections.emptyList());
+        entity.setCreditTransactions(Collections.emptyList());
         return entity;
     }
 }

@@ -1,7 +1,7 @@
 package dysystem.com.greedfinance.controller;
 
+import dysystem.com.greedfinance.dto.request.AmountRequestDTO;
 import dysystem.com.greedfinance.dto.request.CreateSavingRequestDTO;
-import dysystem.com.greedfinance.dto.request.SavingAmountRequestDTO;
 import dysystem.com.greedfinance.dto.request.SavingRequestStatusDTO;
 import dysystem.com.greedfinance.dto.response.SavingResponseDTO;
 import dysystem.com.greedfinance.enums.SavingStatus;
@@ -61,7 +61,7 @@ public class SavingController {
 
     @PutMapping("/add-amount/{id}")
     public ResponseEntity<SavingResponseDTO> addAmountSaving (@PathVariable Long id,
-                                                              @RequestBody @Valid SavingAmountRequestDTO dto){
+                                                              @RequestBody @Valid AmountRequestDTO dto){
         return ResponseEntity.ok(addAmountToSavingUseCase.execute(id, dto));
     }
 

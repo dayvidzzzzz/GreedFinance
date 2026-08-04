@@ -4,14 +4,18 @@ import dysystem.com.greedfinance.domain.model.Card;
 import dysystem.com.greedfinance.handler.exception.NotFoundException;
 import dysystem.com.greedfinance.infra.entity.AccountEntity;
 import dysystem.com.greedfinance.infra.entity.CardEntity;
+import dysystem.com.greedfinance.infra.entity.CreditTransactionEntity;
 import dysystem.com.greedfinance.infra.entity.TenantEntity;
 import dysystem.com.greedfinance.infra.repository.jpa.AccountRepositoryJpa;
+import dysystem.com.greedfinance.infra.repository.jpa.CreditTransactionsRepositoryJpa;
 import dysystem.com.greedfinance.infra.repository.jpa.TenantRepositoryJpa;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @Component
 @AllArgsConstructor
@@ -19,6 +23,7 @@ public class CardMapper {
 
     private final TenantRepositoryJpa tenantRepositoryJpa;
     private final AccountRepositoryJpa accountRepositoryJpa;
+    private final CreditTransactionsRepositoryJpa creditTransactionsRepositoryJpa;
 
     public Card toDomain(CardEntity entity) {
         if (entity == null) return null;
@@ -32,6 +37,12 @@ public class CardMapper {
                 .active(entity.isActive())
                 .tenantId(entity.getTenant() != null ? entity.getTenant().getId() : null)
                 .accountId(entity.getAccount() != null ? entity.getAccount().getId() : null)
+                .creditTransactionsId(
+                        entity.getCreditTransactions()
+                                .stream()
+                                .map(CreditTransactionEntity::getId)
+                                .toList()
+                )
                 .build();
     }
 
@@ -58,6 +69,14 @@ public class CardMapper {
             entity.setAccount(account);
         }
 
+        if (domain.getCreditTransactionsId() != null) {
+            List<CreditTransactionEntity> creditTransactions = creditTransactionsRepositoryJpa.findAllById(domain.getCreditTransactionsId())
+                    .stream()
+                    .toList();
+            entity.setCreditTransactions(creditTransactions);
+        }else{
+            entity.setCreditTransactions(Collections.emptyList());
+        }
         return entity;
     }
 }
