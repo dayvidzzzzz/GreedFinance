@@ -1,13 +1,7 @@
 package dysystem.com.greedfinance.utils;
 
-import dysystem.com.greedfinance.domain.model.Card;
-import dysystem.com.greedfinance.domain.model.Saving;
-import dysystem.com.greedfinance.domain.model.Tenant;
-import dysystem.com.greedfinance.domain.model.User;
-import dysystem.com.greedfinance.dto.response.CardResponseDTO;
-import dysystem.com.greedfinance.dto.response.SavingResponseDTO;
-import dysystem.com.greedfinance.dto.response.TenantResponseDTO;
-import dysystem.com.greedfinance.dto.response.UserResponseDTO;
+import dysystem.com.greedfinance.domain.model.*;
+import dysystem.com.greedfinance.dto.response.*;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -56,5 +50,13 @@ public class ToResponseUtil {
                 card.isActive()
         );
 
+    }
+
+    public CreditTransactionResponseDTO toCreditTransaction(CreditTransactions creditTransactions){
+        return new CreditTransactionResponseDTO(
+                creditTransactions.getId(),
+                creditTransactions.getAmount(),
+                creditTransactions.getTransactionStatus()
+        );
     }
 }
