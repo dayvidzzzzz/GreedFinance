@@ -33,6 +33,8 @@ public class CardEntity {
     @Column(name = "card_limit")
     private BigDecimal limit;
 
+    private BigDecimal balance;
+
     @Column(name = "create_at")
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")

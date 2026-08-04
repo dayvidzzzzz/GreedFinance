@@ -32,6 +32,7 @@ public class CardMapper {
                 .id(entity.getId())
                 .name(entity.getName())
                 .limit(entity.getLimit() != null ? entity.getLimit() : BigDecimal.ZERO)
+                .balance(entity.getBalance() != null ? entity.getBalance() : BigDecimal.ZERO)
                 .createAt(entity.getCreateAt())
                 .updateAt(entity.getUpdateAt())
                 .active(entity.isActive())
@@ -53,6 +54,7 @@ public class CardMapper {
         entity.setId(domain.getId());
         entity.setName(domain.getName());
         entity.setLimit(domain.getLimit() != null ? domain.getLimit() : BigDecimal.ZERO);
+        entity.setBalance(domain.getBalance() != null ? domain.getBalance() : BigDecimal.ZERO);
         entity.setCreateAt(domain.getCreateAt() != null ? domain.getCreateAt() : LocalDateTime.now());
         entity.setUpdateAt(LocalDateTime.now());
         entity.setActive(domain.isActive());

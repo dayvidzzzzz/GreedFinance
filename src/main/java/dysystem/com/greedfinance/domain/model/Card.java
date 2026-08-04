@@ -18,6 +18,7 @@ public class Card {
     private String id;
     private String name;
     private BigDecimal limit;
+    private BigDecimal balance;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private boolean active;
