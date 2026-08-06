@@ -1,12 +1,14 @@
 package dysystem.com.greedfinance.infra.mapper;
 
 import dysystem.com.greedfinance.domain.model.CreditTransactions;
+import dysystem.com.greedfinance.domain.repository.TransactionRepository;
 import dysystem.com.greedfinance.handler.exception.NotFoundException;
 import dysystem.com.greedfinance.infra.entity.CardEntity;
 import dysystem.com.greedfinance.infra.entity.CreditTransactionEntity;
 import dysystem.com.greedfinance.infra.repository.jpa.CardRepositoryJpa;
 import dysystem.com.greedfinance.infra.repository.jpa.CategoryRepositoryJpa;
 import dysystem.com.greedfinance.infra.repository.jpa.TenantRepositoryJpa;
+import dysystem.com.greedfinance.infra.repository.jpa.TransactionRepositoryJpa;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,7 @@ public class CreditTransactionMapper {
     private final CardRepositoryJpa cardRepositoryJpa;
     private final TenantRepositoryJpa tenantRepositoryJpa;
     private final CategoryRepositoryJpa categoryRepositoryJpa;
+    private final TransactionRepositoryJpa transactionRepositoryJpa;
 
     public CreditTransactions toDomain(CreditTransactionEntity entity) {
         if (entity == null) return null;
@@ -39,6 +42,9 @@ public class CreditTransactionMapper {
 
         if (entity.getCard() != null)
             transactions.setCardId(entity.getCard().getId());
+
+        if (entity.getTransaction() != null)
+            transactions.setTransactionId(entity.getTransaction().getId());
 
         return transactions;
     }
@@ -68,6 +74,10 @@ public class CreditTransactionMapper {
                     .orElseThrow(() -> new NotFoundException("Card not found: " + domain.getCardId()));
             transaction.setCard(card);
         }
+
+        if (domain.getTransactionId() != null)
+            transaction.setTransaction(transactionRepositoryJpa.findById(domain.getTransactionId())
+                    .orElseThrow(() -> new NotFoundException("Transaction not found")));
 
         return transaction;
     }

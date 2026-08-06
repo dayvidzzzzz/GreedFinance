@@ -10,6 +10,7 @@ import dysystem.com.greedfinance.service.useCase.creditTransaction.DeleteCreditT
 import dysystem.com.greedfinance.service.useCase.creditTransaction.FindAllCreditTransactionsUseCase;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/v1/api/credit-transactions")
 @AllArgsConstructor
@@ -42,8 +44,9 @@ public class CreditTransactionController {
                 .body(createIncomeCreditUseCase.execute(dto));
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable(required = true) Long id) {
+        log.info("Received DELETE request for transaction ID: {}", id);
         deleteCreditTransactionUseCase.execute(id);
         return ResponseEntity.ok().build();
     }

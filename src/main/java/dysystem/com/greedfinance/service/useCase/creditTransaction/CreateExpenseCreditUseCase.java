@@ -65,7 +65,7 @@ public class CreateExpenseCreditUseCase {
                 .categoryId(category.getId())
                 .tenantId(tenantId)
                 .build();
-        transaction = transactionRepository.save(transaction);
+        Transaction newTransaction = transactionRepository.save(transaction);
 
         CreditTransactions creditTransactions = CreditTransactions.builder()
                 .amount(dto.amount())
@@ -74,7 +74,7 @@ public class CreateExpenseCreditUseCase {
                 .tenantId(tenantId)
                 .transactionStatus(status)
                 .transactionType(TransactionType.EXPENSE)
-                .transactionId(transaction.getId())
+                .transactionId(newTransaction.getId())
                 .build();
 
         BigDecimal newCardBalance = card.getBalance().subtract(dto.amount());
