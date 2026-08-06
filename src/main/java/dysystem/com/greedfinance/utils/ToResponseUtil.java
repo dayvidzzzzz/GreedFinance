@@ -49,6 +49,7 @@ public class ToResponseUtil {
                 card.getId(),
                 card.getName(),
                 card.getLimit(),
+                card.getBalance(),
                 card.isActive()
         );
 

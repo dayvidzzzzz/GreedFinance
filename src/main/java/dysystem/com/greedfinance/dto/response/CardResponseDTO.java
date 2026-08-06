@@ -6,6 +6,7 @@ public record CardResponseDTO(
         String id,
         String name,
         BigDecimal limit,
+        BigDecimal balance,
         boolean ative
 ) {
 }
