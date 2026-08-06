@@ -30,20 +30,17 @@ public class DeleteCreditTransactionUseCase {
     public void execute(Long id){
         log.info("Deleting credit transaction with id: {}", id);
 
-        // 1. Busca o CreditTransaction
         CreditTransactions creditTransactions = creditTransactionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Credit card transaction not found"));
 
-        // 2. Busca o Card
         Card card = cardRepository.findById(creditTransactions.getCardId())
                 .orElseThrow(() -> new NotFoundException("Card not found"));
 
-        // 3. Busca a Account
         Account account = accountRepository.findById(card.getAccountId())
                 .orElseThrow(() -> new NotFoundException("Account not found"));
 
-        // 4. Atualiza os saldos ANTES de deletar
         BigDecimal newCardBalance;
+        Long transactionId = creditTransactions.getTransactionId();
 
         if (creditTransactions.getTransactionType().equals(TransactionType.INCOME)) {
             newCardBalance = card.getBalance().subtract(creditTransactions.getAmount());
@@ -52,24 +49,20 @@ public class DeleteCreditTransactionUseCase {
             BigDecimal newAccountBalance = account.getBalance().add(creditTransactions.getAmount());
             account.setBalance(newAccountBalance);
             accountRepository.save(account);
+
+            if (transactionId != null) {
+                transactionRepository.findById(transactionId)
+                        .ifPresent(transaction -> {
+                            transactionRepository.deleteById(transaction.getId());
+                            log.info("Deleted associated transaction with id: {}", transactionId);
+                        });
+            } else {
+                log.warn("Credit transaction {} has no associated transaction", id);
+            }
         }
 
         card.setBalance(newCardBalance);
         cardRepository.save(card);
-
-        // 5. Deleta a Transaction associada (se existir)
-        Long transactionId = creditTransactions.getTransactionId();
-        if (transactionId != null) {
-            transactionRepository.findById(transactionId)
-                    .ifPresent(transaction -> {
-                        transactionRepository.deleteById(transaction.getId());
-                        log.info("Deleted associated transaction with id: {}", transactionId);
-                    });
-        } else {
-            log.warn("Credit transaction {} has no associated transaction", id);
-        }
-
-        // 6. Deleta o CreditTransaction
         creditTransactionRepository.deleteById(id);
         log.info("Credit transaction {} deleted successfully", id);
     }

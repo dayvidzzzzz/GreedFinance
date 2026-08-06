@@ -60,6 +60,7 @@ public class ToResponseUtil {
                 creditTransactions.getId(),
                 creditTransactions.getAmount(),
                 creditTransactions.getTransactionStatus(),
+                creditTransactions.getTransactionType(),
                 creditTransactions.getCreatedAt()
         );
     }
